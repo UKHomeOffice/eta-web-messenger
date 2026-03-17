@@ -1,0 +1,155 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  {{ if eq .KUBE_NAMESPACE .PROD_ENV }}
+  name: {{ .APP_NAME }}
+  {{ else if eq .KUBE_NAMESPACE .BRANCH_ENV }}
+  annotations:
+    downscaler/uptime: {{ .NON_PROD_AVAILABILITY }}
+  name: {{ .APP_NAME }}-{{ .DRONE_SOURCE_BRANCH }}
+  {{ else }}
+  annotations:
+    downscaler/uptime: {{ .NON_PROD_AVAILABILITY }}
+  name: {{ .APP_NAME }}
+  {{ end }}
+spec:
+  {{ if or (eq .KUBE_NAMESPACE .STG_ENV) (eq .KUBE_NAMESPACE .PROD_ENV) }}
+  replicas: 2
+  {{ else }}
+  replicas: 1
+  {{ end }}
+  selector:
+    matchLabels:
+      {{ if eq .KUBE_NAMESPACE .BRANCH_ENV }}
+      name: {{ .APP_NAME }}-{{ .DRONE_SOURCE_BRANCH }}
+      {{ else }}
+      name: {{ .APP_NAME }}
+      {{ end }}
+  template:
+    metadata:
+      labels:
+        {{ if eq .KUBE_NAMESPACE .BRANCH_ENV }}
+        name: {{ .APP_NAME }}-{{ .DRONE_SOURCE_BRANCH }}
+        app: {{ .APP_NAME }}-{{ .DRONE_SOURCE_BRANCH }}
+        service: {{ .APP_NAME }}-{{ .DRONE_SOURCE_BRANCH }}
+        {{ else }}
+        name: {{ .APP_NAME }}
+        app: {{ .APP_NAME }}
+        service: {{ .APP_NAME }}
+        {{ end }}
+    spec:    
+      containers:
+        - name: {{ .APP_NAME }}
+          image: {{ .IMAGE_URL }}/{{ .IMAGE_REPO }}:{{.DRONE_COMMIT_SHA}}
+          imagePullPolicy: Always
+          securityContext:
+            runAsNonRoot: true
+          ports:
+            - containerPort: 8080
+          env:
+            - name: TZ
+              value: Europe/London
+            - name: NODE_TLS_REJECT_UNAUTHORIZED
+              value: "0"
+            - name: ETA_DEPLOYMENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: genesys-deployment
+                  key: eta
+            - name: EVISA_DEPLOYMENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: genesys-deployment
+                  key: evisa
+            - name: EUSS_DEPLOYMENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: genesys-deployment
+                  key: euss
+            - name: GENESYS_ENVIRONMENT
+              value: "prod-euw2"
+            - name: GOOGLE_TAG_MANAGER_ID
+              valueFrom:
+                secretKeyRef:
+                  name: google-analytics
+                  key: gtmId
+            {{ if eq .KUBE_NAMESPACE .PROD_ENV }} # only enable analytics in production
+            - name: ENABLE_ANALYTICS
+              value: "true"
+            {{ else }}
+            - name: ENABLE_ANALYTICS
+              value: "false"
+            {{ end }}
+            - name: LOG_ENDPOINT
+              value: "/log"
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 80
+            initialDelaySeconds: 60
+            periodSeconds: 15
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 80
+            initialDelaySeconds: 60
+            periodSeconds: 15
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "256Mi"
+            limits:
+              cpu: "500m"
+              memory: "512Mi"
+          volumeMounts:
+            - mountPath: /public
+              name: public
+        - name: nginx-proxy
+          # nginx-proxy-govuk:v4.4 with error pages alma linux is the base and upgraded 14/07
+          image: quay.io/ukhomeofficedigital/hof-docker-nginx-proxy:0.0.8
+          resources:
+            requests:
+              memory: 64Mi
+              cpu: 50m
+            limits:
+              cpu: 250m
+              memory: 256Mi
+          env:
+{{ file .NGINX_SETTINGS | indent 12 }}
+          ports:
+            - containerPort: 10443
+          volumeMounts:
+            - mountPath: /public
+              name: public
+          securityContext:
+            runAsNonRoot: true
+        - name: hof-logging-api
+          image: 340268328991.dkr.ecr.eu-west-2.amazonaws.com/sas/hof-logging-api:v0.4.0
+          ports:
+            - containerPort: 8081
+          env:
+            - name: LOG_LEVEL
+              value: "info"
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8081
+            initialDelaySeconds: 30
+            periodSeconds: 15
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8081
+            initialDelaySeconds: 30
+            periodSeconds: 15
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+            limits:
+              cpu: "200m"
+              memory: "256Mi"
+      volumes:
+        - name: public
+          emptyDir: {}
