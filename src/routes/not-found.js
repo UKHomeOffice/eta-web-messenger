@@ -30,23 +30,7 @@ export default function NotFound() {
             className="govuk-link govuk-link--no-visited-state" 
             href="https://www.ask-question-about-electronic-travel-authorisation.homeoffice.gov.uk">
               https://www.ask-question-about-electronic-travel-authorisation.homeoffice.gov.uk</a>
-        </p>        
-        <p className="govuk-body">
-          EUSS:
-          &nbsp;<a id="euss-not-found-link"
-            data-testid="euss-not-found-link"
-            className="govuk-link govuk-link--no-visited-state" 
-            href="https://eu-settled-status-enquiries.service.gov.uk/start">
-              https://eu-settled-status-enquiries.service.gov.uk/start</a>
-        </p>        
-        <p className="govuk-body">
-          eVisa:
-          &nbsp;<a id="evisa-not-found-link"
-            data-testid="evisa-not-found-link"
-            className="govuk-link govuk-link--no-visited-state"
-            href="https://www.ask-about-getting-access-evisa.homeoffice.gov.uk/start">
-              https://www.ask-about-getting-access-evisa.homeoffice.gov.uk/start</a>
-        </p>  
+        </p>
       </div>
     </div>
   );

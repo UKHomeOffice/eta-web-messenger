@@ -17,15 +17,7 @@ export default async function logData({ level, message, metadata }) {
 
 export async function logToService(level, message, metadata) {
 
-  const path = window.location.pathname.toLowerCase();
   let supportType = 'ETA';
-
-  if (path.includes('euss')) {
-    supportType = 'EUSS';
-  } else if (path.includes('evisa')) {
-    supportType = 'eVisa';
-  }
-
   const service = `${supportType} Web Messenger`;
 
   const payload = {

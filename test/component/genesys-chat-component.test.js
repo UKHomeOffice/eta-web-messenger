@@ -153,7 +153,7 @@ describe('Genesys Chat Component', () => {
     });
 
     subscribeToGenesysMessages.mockImplementation((onMessagesReceived) => {
-      onMessagesReceived([outboundMessages[2]]);
+      onMessagesReceived([outboundMessages[0]]);
     });
 
     renderGenesysChatComponent();
@@ -340,7 +340,7 @@ describe('Genesys Chat Component', () => {
     const outboundMessageHistory = screen.getAllByTestId('outbound-message');
     expect(outboundMessageHistory).toHaveLength(1);
     expect(outboundMessageHistory[0]).toBeInTheDocument();
-    expect(outboundMessageHistory[0]).toHaveTextContent('Welcome to EVisa webchat, in few word how can i help you today?');
+    expect(outboundMessageHistory[0]).toHaveTextContent('Hello and welcome to the ETA webchat service. Please ask me a question relating to the ETA process. You\'re communicating with a computer. Please do not disclose any personal or sensitive information.');
 
     const inboundMessageHistory = screen.getAllByTestId('inbound-message');
     expect(inboundMessageHistory).toHaveLength(1);

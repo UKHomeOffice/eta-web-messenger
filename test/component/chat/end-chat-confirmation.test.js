@@ -14,9 +14,7 @@ describe('EndChatConfirmation component', () => {
   }
 
   test.each([
-    'eta',
-    'evisa',
-    'euss'
+    'eta'
   ])('renders correct feedback and new chat links for service %s', (serviceName) => {
 
     const state = { serviceName: serviceName };

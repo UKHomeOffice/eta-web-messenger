@@ -15,12 +15,6 @@ loadEnvironmentConfig(() => {
 
   let supportType = 'ETA';
 
-  if (path.includes('euss')) {
-    supportType = 'EUSS';
-  } else if (path.includes('evisa')) {
-    supportType = 'eVisa';
-  }
-
   document.title = `Webchat: UK ${supportType} support - GOV.UK`;
 
   const RootLayout = require('./components/layout/layout').default;

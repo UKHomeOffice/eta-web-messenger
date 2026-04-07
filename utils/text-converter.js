@@ -67,15 +67,11 @@ export const convertHtmlWithLinkText = (text, serviceName) => {
 /**
  * Get the right UTM param based on the service name. This name can never not be present,
  * so we don't default to an error.
- * @param {string} the name of the service (eta, euss, evisa)
+ * @param {string} the name of the service (eta)
  * @returns {string} the UTM param for the service
  */
 function getUtmParametersByServiceName(serviceName) {
   switch (serviceName) {
-    case 'euss':
-      return config.euss.gaUtmParam;
-    case 'evisa':
-      return config.evisa.gaUtmParam;
     default:
       return config.eta.gaUtmParam;
   }

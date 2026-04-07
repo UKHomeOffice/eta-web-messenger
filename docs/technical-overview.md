@@ -55,7 +55,7 @@ Files involved:
 - assets/                — static assets copied to built site
 - src/                   — application source
   - index.js             — bootstraps the app: loads env, selects service and renders React tree
-  - App.js               — top-level routes (eta, euss, evisa, cookies, accessibility)
+  - App.js               — top-level routes (eta, cookies, accessibility)
   - env-bootstrap.js     — loads `env.json` and exposes `getEnvValueByKey`
   - conversation/        — conversation logic and providers (conversation storage, provider)
   - genesys/             — genesys/adapter integration (where Genesys SDK functions are handled)

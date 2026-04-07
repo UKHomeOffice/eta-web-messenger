@@ -21,7 +21,7 @@ describe('Message component - screen reader accessibility', () => {
 
     // Check each message has role="article" and correct aria-label
     const articles = getAllByRole('article');
-    expect(articles).toHaveLength(9);
+    expect(articles).toHaveLength(7);
     expect(articles[0]).toHaveAttribute('aria-label', 'Outbound message');
     expect(articles[6]).toHaveAttribute('aria-label', 'Inbound message');
 

@@ -8,9 +8,7 @@ expect.extend(toHaveNoViolations);
 jest.mock('../../../../../utils/feedback', () => ({
   getFeedbackUrl: jest.fn(() => ({
     production: {
-      eta: 'eta-url',
-      evisa: 'evisa-url',
-      euss: 'euss-url'
+      eta: 'eta-url'
     }
   }))
 }));

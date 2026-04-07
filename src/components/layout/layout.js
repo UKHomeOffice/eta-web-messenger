@@ -1,5 +1,4 @@
 import { useEffect } from 'react';
-import { useLocation } from 'react-router';
 import Header from './header/header';
 import PhaseBanner from './banner/phase-banner';
 import Footer from './footer/footer';
@@ -10,33 +9,14 @@ import { getEnvValueByKey } from '../../env-bootstrap';
 
 export default function RootLayout({ children }) {
 
-  const location = useLocation();
-  const pathname = location.pathname;
-
   // Create an IIFE to assign the result of the if statement directly to the constant
   const serviceDetails = (() => {
-    if (pathname.startsWith('/eta')) {
-      return {
-        serviceName: 'eta',
-        cookiePolicy: 'eta_cookie_policy',
-        accessibilityStatement: 'eta_accessibilty_statement',
-        path: '/eta'
-      };
-    } else if (pathname.startsWith('/euss')) {
-      return {
-        serviceName: 'euss',
-        cookiePolicy: 'euss_cookie_policy',
-        accessibilityStatement: 'euss_accessibilty_statement',
-        path: '/euss'
-      };
-    } else {
-      return {
-        serviceName: 'evisa',
-        cookiePolicy: 'evisa_cookie_policy',
-        accessibilityStatement: 'evisa_accessibilty_statement',
-        path: '/evisa'
-      };
-    }
+    return {
+      serviceName: 'eta',
+      cookiePolicy: 'eta_cookie_policy',
+      accessibilityStatement: 'eta_accessibilty_statement',
+      path: '/eta'
+    };
   })();
 
   // Enable analytics if feature flag is set to true. This will only be set in production.
