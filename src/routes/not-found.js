@@ -1,3 +1,5 @@
+import config from '../../config';
+
 export default function NotFound() {
   return (
     <div className="govuk-grid-row">
@@ -24,12 +26,12 @@ export default function NotFound() {
           If you need support and it's outside of normal working hours, you can use one of the following contact forms:
         </p>
         <p className="govuk-body">
-          ETA:
-          &nbsp;<a id="eta-not-found-link"
-            data-testid="eta-not-found-link"
+          {config.service.serviceName}:
+          &nbsp;<a id="not-found-link"
+            data-testid="not-found-link"
             className="govuk-link govuk-link--no-visited-state" 
-            href="https://www.ask-question-about-electronic-travel-authorisation.homeoffice.gov.uk">
-              https://www.ask-question-about-electronic-travel-authorisation.homeoffice.gov.uk</a>
+            href={config.service.errorContactLink}>
+            {config.service.errorContactLink}</a>
         </p>
       </div>
     </div>

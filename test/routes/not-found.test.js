@@ -38,8 +38,8 @@ describe('Not found page', () => {
     const links = screen.getAllByRole('link');
     expect(links).toHaveLength(1);
 
-    expect(screen.getByTestId('eta-not-found-link')).toBeInTheDocument();
-    expect(screen.getByTestId('eta-not-found-link')).toHaveTextContent('https://www.ask-question-about-electronic-travel-authorisation.homeoffice.gov.uk');
+    expect(screen.getByTestId('not-found-link')).toBeInTheDocument();
+    expect(screen.getByTestId('not-found-link')).toHaveTextContent('https://www.ask-question-about-electronic-travel-authorisation.homeoffice.gov.uk');
   });
 });
 
