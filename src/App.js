@@ -9,7 +9,7 @@ import { ErrorBoundary } from './error/error-boundary';
 
 export function App() {
 
-  let contactFormLink = config.eta.errorContactLink;
+  let contactFormLink = config.service.errorContactLink;
 
   return (
     <ErrorBoundary contactFormLink={contactFormLink}>
@@ -19,8 +19,8 @@ export function App() {
         <Route path="/eta/cookies" element={<ViewCookies serviceName="eta" />} />
         <Route path="/eta/accessibility" element={
           <AccessibilityStatement
-            serviceName={config.eta.serviceName}
-            definition={config.eta.definition} />}
+            serviceName={config.service.serviceName}
+            definition={config.service.definition} />}
         />
         <Route path="/end-chat-confirmation" element={<EndChatConfirmation/>} />
         <Route path='*' element={<NotFound />} />

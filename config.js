@@ -13,7 +13,7 @@ module.exports = {
   botMetaDisplay: 'Digital assistant',
   userMetaDisplay: 'You',
   maxCharacterLimit: 4096,
-  eta: {
+  service: {
     definition: 'electronic travel authorisation',
     deploymentId: getEnvValueByKey('ETA_DEPLOYMENT_ID'),
     localStorageKey: 'eta-genesys-session',

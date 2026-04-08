@@ -73,6 +73,6 @@ export const convertHtmlWithLinkText = (text, serviceName) => {
 function getUtmParametersByServiceName(serviceName) {
   switch (serviceName) {
     default:
-      return config.eta.gaUtmParam;
+      return config.service.gaUtmParam;
   }
 }
