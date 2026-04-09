@@ -14,7 +14,7 @@ jest.mock('../../src/genesys/genesys-service.js', () => ({
 import '@testing-library/jest-dom';
 import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router';
-import Eta from '../../src/routes/eta';
+import Service from '../../src/routes/service.js';
 import {
   initialiseGenesysConversation,
   subscribeToErrors,
@@ -32,7 +32,7 @@ const renderComponentWithRouter = (component) => render(
 
 describe('Eta page', () => {
   test('renders ETA page with correct content', () => {
-    renderComponentWithRouter(<Eta />);
+    renderComponentWithRouter(<Service />);
 
     const headings = screen.getAllByRole('heading');
     expect(headings[0]).toHaveTextContent('Home Office ETA Chat');
@@ -67,7 +67,7 @@ describe('Eta page', () => {
       }]);
     });
 
-    renderComponentWithRouter(<Eta />);
+    renderComponentWithRouter(<Service />);
 
     const headings = screen.getAllByRole('heading');
     expect(headings).toHaveLength(1);
@@ -91,7 +91,7 @@ describe('Eta page', () => {
       onError();
     });
 
-    renderComponentWithRouter(<Eta />);
+    renderComponentWithRouter(<Service />);
 
     const headings = screen.getAllByRole('heading');
     expect(headings).toHaveLength(1);
