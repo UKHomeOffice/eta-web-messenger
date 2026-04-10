@@ -13,7 +13,7 @@ export default function CookieAcceptance({ accepted, hideCookieMessage, serviceN
               You can <Link 
               data-testid="change-cookie-settings" 
               className="govuk-link" 
-              to={`/${serviceName}/cookies`} 
+              to="/cookies" 
               state={{ cookiePolicy }}>change your cookie settings</Link> at any time.</p>
           </div>
         </div>

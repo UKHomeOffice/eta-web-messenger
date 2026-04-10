@@ -16,7 +16,7 @@ export default function ViewCookies(props) {
   const [useCookies, setUseCookies] = useState(false);
   const [hasUpdatedSettings, setHasUpdatedSettings] = useState(false);
 
-  const cookiePolicy = location.state?.cookiePolicy;
+  const cookiePolicy = location.state?.cookiePolicy || 'eta_cookie_policy';
 
   useEffect(() => {
     const cookieValue = Cookies.get(cookiePolicy);

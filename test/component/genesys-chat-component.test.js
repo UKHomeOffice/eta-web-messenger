@@ -479,9 +479,7 @@ describe('Genesys Chat Component', () => {
     // clearConversation should be called with ETA_LOCAL_STORAGE_KEY
     expect(clearConversation).toHaveBeenCalledWith('test-local-storage-key');
 
-    expect(mockNavigate).toHaveBeenCalledWith('/end-chat-confirmation', {
-      state: { serviceName: 'eta' }
-    });
+    expect(mockNavigate).toHaveBeenCalledWith('/end-chat-confirmation');
   });
 
   test('renders offline banner and disables chat form when offline event is triggered', async () => {

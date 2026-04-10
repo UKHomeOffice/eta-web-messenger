@@ -85,7 +85,7 @@ export default function CookieBanner({ serviceName, cookiePolicy }) {
               </button>
               <Link 
                 className="govuk-link view-cookie-link" 
-                to={`/${serviceName}/cookies`}
+                to="/cookies"
                 state={{ 
                   cookiePolicy,
                   serviceName

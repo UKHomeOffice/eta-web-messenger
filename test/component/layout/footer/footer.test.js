@@ -14,7 +14,7 @@ describe('Footer component', () => {
 
     const cookiesLink = document.querySelector('[data-testid="footer-cookies-link"]');
     expect(cookiesLink).toBeInTheDocument();
-    expect(cookiesLink).toHaveAttribute('href', '/ETA/cookies');
+    expect(cookiesLink).toHaveAttribute('href', '/cookies');
   });
 
   test('renders with Privacy policy link', async () => {
@@ -38,6 +38,6 @@ describe('Footer component', () => {
 
     const accessibilityLink = document.querySelector('[data-testid="footer-accessibilty-statement-link"]');
     expect(accessibilityLink).toBeInTheDocument();
-    expect(accessibilityLink).toHaveAttribute('href', '/ETA/accessibility');
+    expect(accessibilityLink).toHaveAttribute('href', '/accessibility');
   });
 });

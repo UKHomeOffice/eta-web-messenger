@@ -305,11 +305,7 @@ export default function GenesysChatComponent({
 
     clearConversation(localStorageKey);
 
-    navigate('/end-chat-confirmation', {
-      state: {
-        serviceName: serviceName.toLowerCase()
-      }
-    });
+    navigate('/end-chat-confirmation');
   };
 
   const handleFetchMessageHistory = () => {

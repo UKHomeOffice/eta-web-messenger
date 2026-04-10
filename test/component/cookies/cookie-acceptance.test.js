@@ -36,7 +36,7 @@ describe('CookieAcceptance', () => {
     );
     const link = screen.getByTestId('change-cookie-settings');
     expect(link).toBeInTheDocument();
-    expect(link).toHaveAttribute('href', '/eta/cookies');
+    expect(link).toHaveAttribute('href', '/cookies');
   });
 
   test('calls hideCookieMessage when hide button is clicked', () => {

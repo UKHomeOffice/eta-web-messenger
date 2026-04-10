@@ -70,7 +70,7 @@ describe('CookieBanner', () => {
 
     const cookieSettingsLink = screen.getByTestId('change-cookie-settings');
     expect(cookieSettingsLink).toBeInTheDocument();
-    expect(cookieSettingsLink).toHaveAttribute('to', `/${serviceName}/cookies`);
+    expect(cookieSettingsLink).toHaveAttribute('to', '/cookies');
   });
 
   test('rejects analytics cookies and renders rejection message', async () => {
@@ -88,7 +88,7 @@ describe('CookieBanner', () => {
 
     const cookieSettingsLink = screen.getByTestId('change-cookie-settings');
     expect(cookieSettingsLink).toBeInTheDocument();
-    expect(cookieSettingsLink).toHaveAttribute('to', `/${serviceName}/cookies`);
+    expect(cookieSettingsLink).toHaveAttribute('to', '/cookies');
   });
 
   test('shows "View cookies" link', () => {
@@ -98,7 +98,7 @@ describe('CookieBanner', () => {
     const link = screen.getByText(/View cookies/i);
 
     expect(link).toBeInTheDocument();
-    expect(link).toHaveAttribute('to', `/${serviceName}/cookies`);
+    expect(link).toHaveAttribute('to', '/cookies');
   });
 
   test('hides cookie acceptance message when hideCookieMessage is called', async () => {

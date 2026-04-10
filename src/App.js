@@ -1,4 +1,4 @@
-import { Routes, Route, Navigate } from 'react-router';
+import { Routes, Route } from 'react-router';
 import config from '../config';
 import Service from './routes/service';
 import ViewCookies from './components/cookies/view-cookies';
@@ -8,24 +8,21 @@ import EndChatConfirmation from './components/chat/end-chat-confirmation';
 import { ErrorBoundary } from './error/error-boundary';
 
 export function App() {
-
-  let contactFormLink = config.service.errorContactLink;
-  const serviceSlug = config.service.serviceName.toLowerCase();
-  const basePath = `/${serviceSlug}`; // e.g. /eta
+  const contactFormLink = config.service.errorContactLink;
 
   return (
     <ErrorBoundary contactFormLink={contactFormLink}>
       <Routes>
-        <Route path="/" element={<Navigate to={basePath} />} />
-        <Route path={basePath} element={<Service />} />
-        <Route path={`${basePath}/cookies`} element={<ViewCookies serviceName={serviceSlug} />} />
-        <Route path={`${basePath}/accessibility`} element={
+        <Route path="/" element={<Service />} />
+        <Route path="/cookies" element={<ViewCookies serviceName={config.service.serviceName.toLowerCase()} />} />
+        <Route path="/accessibility" element={
           <AccessibilityStatement
             serviceName={config.service.serviceName}
-            definition={config.service.definition} />}
+            definition={config.service.definition}
+          />}
         />
-        <Route path="/end-chat-confirmation" element={<EndChatConfirmation/>} />
-        <Route path='*' element={<NotFound />} />
+        <Route path="/end-chat-confirmation" element={<EndChatConfirmation />} />
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </ErrorBoundary>
   );
