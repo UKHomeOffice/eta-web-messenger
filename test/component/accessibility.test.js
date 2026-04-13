@@ -11,7 +11,7 @@ const renderComponentWithRouter = (component) => render(
 
 describe('Accessibility page', () => {
   test('renders Accessibility page with correct content', () => {
-    renderComponentWithRouter(<AccessibilityStatement serviceName="ETA" definition="electronic travel authorisation" />);
+    renderComponentWithRouter(<AccessibilityStatement />);
 
     const headings = screen.getAllByRole('heading');
     expect(headings[0]).toHaveTextContent('Accessibility statement for ask about electronic travel authorisation (ETA)');

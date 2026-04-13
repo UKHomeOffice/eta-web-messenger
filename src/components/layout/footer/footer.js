@@ -1,6 +1,6 @@
 import { Link } from 'react-router';
 
-export default function Footer({ cookiePolicy, accessibilityStatement }) {
+export default function Footer() {
   return (
     <footer className="govuk-footer">
       <div className="govuk-width-container">
@@ -33,7 +33,6 @@ export default function Footer({ cookiePolicy, accessibilityStatement }) {
                 <Link
                   className="govuk-footer__link"
                   to="/cookies"
-                  state={{ cookiePolicy }}
                   data-testid="footer-cookies-link">
                   Cookies
                 </Link>
@@ -51,7 +50,6 @@ export default function Footer({ cookiePolicy, accessibilityStatement }) {
                 <Link
                   className="govuk-footer__link"
                   to="/accessibility"
-                  state={{ accessibilityStatement }}
                   data-testid="footer-accessibilty-statement-link">
                   Accessibility statement
                 </Link>

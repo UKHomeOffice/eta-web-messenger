@@ -23,11 +23,10 @@ export default function NotFound() {
         </p>
         <h2 className="govuk-heading-m">Need help outside of working hours?</h2>
         <p className="govuk-body">
-          If you need support and it's outside of normal working hours, you can use one of the following contact forms:
+          If you need support and it's outside of normal working hours, you can use the following contact form for ETA:
         </p>
         <p className="govuk-body">
-          {config.service.name}:
-          &nbsp;<a id="not-found-link"
+          <a id="not-found-link"
             data-testid="not-found-link"
             className="govuk-link govuk-link--no-visited-state" 
             href={config.service.errorContactLink}>

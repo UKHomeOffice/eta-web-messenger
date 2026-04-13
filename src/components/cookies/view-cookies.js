@@ -1,22 +1,20 @@
 import Cookies from 'js-cookie';
 import { useEffect, useState } from 'react';
-import { useLocation } from 'react-router';
 import updateCookieSettings from './utils';
 import CookieUpdateConfirmation from './cookie-update-confirmation';
 import UpdateCookiesForm from './update-cookies-form';
 import { useCookieBannerVisibility } from './cookie-banner-visibility-provider';
 import { removeGoogleAnalyticsCookies } from '../../google-analytics/google-analytics';
+import config from '../../../config';
 
-export default function ViewCookies(props) {
+export default function ViewCookies() {
 
   const { setShowCookieBanner } = useCookieBannerVisibility();
-
-  const location = useLocation();
 
   const [useCookies, setUseCookies] = useState(false);
   const [hasUpdatedSettings, setHasUpdatedSettings] = useState(false);
 
-  const cookiePolicy = location.state?.cookiePolicy || 'eta_cookie_policy';
+  const cookiePolicy = config.service.cookiePolicy;
 
   useEffect(() => {
     const cookieValue = Cookies.get(cookiePolicy);
@@ -50,7 +48,7 @@ export default function ViewCookies(props) {
   return (
     <div className="govuk-width-container">
       {hasUpdatedSettings &&
-        <CookieUpdateConfirmation serviceName={props.serviceName} />
+        <CookieUpdateConfirmation />
       }
       <main className="govuk-main-wrapper " id="main-content" role="main">
         <div className="govuk-grid-row">
@@ -109,7 +107,6 @@ export default function ViewCookies(props) {
             </table>
             <p className="govuk-body">We do not allow Google to use or share the data about how you use this site.</p>
             <UpdateCookiesForm
-              serviceName={props.serviceName}
               useCookies={useCookies}
               setUseCookies={setUseCookies}
               handleSaveCookieSettings={handleSaveCookieSettings}

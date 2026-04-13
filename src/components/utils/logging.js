@@ -17,8 +17,7 @@ export default async function logData({ level, message, metadata }) {
 
 export async function logToService(level, message, metadata) {
 
-  let supportType = 'ETA';
-  const service = `${supportType} Web Messenger`;
+  const service = `${config.service.name} Web Messenger`;
 
   const payload = {
     timestamp: new Date().toISOString(),

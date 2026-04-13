@@ -4,13 +4,17 @@ import Cookies from 'js-cookie';
 import CookieAcceptance from './cookie-acceptance';
 import updateCookieSettings from './utils';
 import { useCookieBannerVisibility } from './cookie-banner-visibility-provider';
+import config from '../../../config';
 
-export default function CookieBanner({ serviceName, cookiePolicy }) {
+export default function CookieBanner() {
 
   const { showCookieBanner, setShowCookieBanner } = useCookieBannerVisibility();
 
   const [cookiesAccepted, setCookiesAccepted] = useState(null);
   const [showCookieAcceptanceMessage, setShowCookieAcceptanceMessage] = useState(false);
+
+  const serviceName = config.service.name.toLowerCase();
+  const cookiePolicy = config.service.cookiePolicy;
 
   useEffect(() => {
     const cookie = Cookies.get(cookiePolicy);
@@ -86,10 +90,6 @@ export default function CookieBanner({ serviceName, cookiePolicy }) {
               <Link 
                 className="govuk-link view-cookie-link" 
                 to="/cookies"
-                state={{ 
-                  cookiePolicy,
-                  serviceName
-                }}
               >
                 View cookies
               </Link>

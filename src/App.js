@@ -14,13 +14,8 @@ export function App() {
     <ErrorBoundary contactFormLink={contactFormLink}>
       <Routes>
         <Route path="/" element={<Eta />} />
-        <Route path="/cookies" element={<ViewCookies serviceName={config.service.name.toLowerCase()} />} />
-        <Route path="/accessibility" element={
-          <AccessibilityStatement
-            serviceName={config.service.name}
-            definition={config.service.definition}
-          />}
-        />
+        <Route path="/cookies" element={<ViewCookies />} />
+        <Route path="/accessibility" element={<AccessibilityStatement />} />
         <Route path="/end-chat-confirmation" element={<EndChatConfirmation />} />
         <Route path="*" element={<NotFound />} />
       </Routes>

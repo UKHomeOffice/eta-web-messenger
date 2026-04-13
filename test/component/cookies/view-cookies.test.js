@@ -37,7 +37,7 @@ describe('ViewCookies', () => {
   });
 
   test('renders cookie information and headings', () => {
-    renderWithRouter(<ViewCookies serviceName="TestService" />, { state: { cookiePolicy: 'analytics' } });
+    renderWithRouter(<ViewCookies />, { state: { cookiePolicy: 'eta_cookie_policy' } });
     expect(screen.getByText('Cookies')).toBeInTheDocument();
     expect(screen.getByText('Essential cookies')).toBeInTheDocument();
     expect(screen.getByText('Analytics cookies (optional)')).toBeInTheDocument();
@@ -46,22 +46,22 @@ describe('ViewCookies', () => {
 
   test('sets useCookies to true if cookie value is "true"', () => {
     Cookies.get.mockReturnValue('true');
-    renderWithRouter(<ViewCookies serviceName="TestService" />, { state: { cookiePolicy: 'analytics' } });
+    renderWithRouter(<ViewCookies />, { state: { cookiePolicy: 'eta_cookie_policy' } });
 
     // The form should be rendered with useCookies true, but since it's mocked, we can't check directly.
     // Instead, check that Cookies.get was called with correct policy.
-    expect(Cookies.get).toHaveBeenCalledWith('analytics');
+    expect(Cookies.get).toHaveBeenCalledWith('eta_cookie_policy');
   });
 
   test('sets useCookies to false if cookie value is not "true"', () => {
     Cookies.get.mockReturnValue('false');
-    renderWithRouter(<ViewCookies serviceName="TestService" />, { state: { cookiePolicy: 'analytics' } });
-    expect(Cookies.get).toHaveBeenCalledWith('analytics');
+    renderWithRouter(<ViewCookies />, { state: { cookiePolicy: 'eta_cookie_policy' } });
+    expect(Cookies.get).toHaveBeenCalledWith('eta_cookie_policy');
   });
 
   test('shows confirmation after saving settings', async () => {
     Cookies.get.mockReturnValue('true');
-    renderWithRouter(<ViewCookies serviceName="TestService" />, { state: { cookiePolicy: 'analytics' } });
+    renderWithRouter(<ViewCookies />, { state: { cookiePolicy: 'eta_cookie_policy' } });
 
     await userEvent.click(screen.getByText('Save'));
 
@@ -70,25 +70,25 @@ describe('ViewCookies', () => {
 
   test('calls updateCookieSettings with true when useCookies is true', async () => {
     Cookies.get.mockReturnValue('true');
-    renderWithRouter(<ViewCookies serviceName="TestService" />, { state: { cookiePolicy: 'analytics' } });
+    renderWithRouter(<ViewCookies />, { state: { cookiePolicy: 'eta_cookie_policy' } });
 
     await userEvent.click(screen.getByText('Save'));
 
-    expect(updateCookieSettings).toHaveBeenCalledWith('analytics', true);
+    expect(updateCookieSettings).toHaveBeenCalledWith('eta_cookie_policy', true);
   });
 
   test('calls updateCookieSettings with false when useCookies is false', async () => {
     Cookies.get.mockReturnValue('false');
-    renderWithRouter(<ViewCookies serviceName="TestService" />, { state: { cookiePolicy: 'analytics' } });
+    renderWithRouter(<ViewCookies />, { state: { cookiePolicy: 'eta_cookie_policy' } });
 
     await userEvent.click(screen.getByText('Save'));
 
-    expect(updateCookieSettings).toHaveBeenCalledWith('analytics', false);
+    expect(updateCookieSettings).toHaveBeenCalledWith('eta_cookie_policy', false);
   });
 
   test('scrolls to top when saving settings', async () => {
     Cookies.get.mockReturnValue('true');
-    renderWithRouter(<ViewCookies serviceName="TestService" />, { state: { cookiePolicy: 'analytics' } });
+    renderWithRouter(<ViewCookies />, { state: { cookiePolicy: 'eta_cookie_policy' } });
 
     await userEvent.click(screen.getByText('Save'));
 
@@ -96,7 +96,7 @@ describe('ViewCookies', () => {
   });
 
   test('renders table with analytics cookies info', () => {
-    renderWithRouter(<ViewCookies serviceName="TestService" />, { state: { cookiePolicy: 'analytics' } });
+    renderWithRouter(<ViewCookies />, { state: { cookiePolicy: 'eta_cookie_policy' } });
     expect(screen.getByText('Analytics cookies we use')).toBeInTheDocument();
 
     const table = screen.getByTestId('analytics-cookies-table');

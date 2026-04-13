@@ -8,11 +8,13 @@ export default function PreparationStatementSection() {
       </h2>
 
       <p className="govuk-body">
-        This statement was prepared on {config.statementDate}. It was last reviewed on {config.statementReviewedDate}.
+        This statement was prepared on {config.accessibility.statementDate}.
+        It was last reviewed on {config.accessibility.statementReviewedDate}.
       </p>
 
       <p className="govuk-body">
-        This service was last tested on {config.websiteUpdates}. The test was carried out internally by the Home Office.
+        This service was last tested on {config.accessibility.websiteUpdates}.
+        The test was carried out internally by the Home Office.
       </p>
 
       <p className="govuk-body">

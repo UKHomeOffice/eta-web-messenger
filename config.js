@@ -14,16 +14,18 @@ module.exports = {
   userMetaDisplay: 'You',
   maxCharacterLimit: 4096,
   service: {
-    definition: 'electronic travel authorisation',
     deploymentId: getEnvValueByKey('ETA_DEPLOYMENT_ID'),
     localStorageKey: 'eta-genesys-session',
     name: 'ETA',
     subText: 'an ETA (electronic travel authorisation).',
+    cookiePolicy: 'eta_cookie_policy',
     errorContactLink: 'https://www.ask-question-about-electronic-travel-authorisation.homeoffice.gov.uk',
     gaUtmParam: '?utm_source=webmessenger&utm_medium=internal_link&utm_campaign=ETA_Internal_WebMessenger'
   },
-  statementDate: '(10 November 2025)',
-  statementReviewedDate: '(10 November 2025)',
-  websiteUpdates: '(30 October 2025)',
+  accessibility: {
+    statementDate: '(10 November 2025)',
+    statementReviewedDate: '(10 November 2025)',
+    websiteUpdates: '(30 October 2025)'
+  }, 
   logApiEndpoint: getEnvValueByKey('LOG_ENDPOINT')
 };
