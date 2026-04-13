@@ -14,10 +14,10 @@ export function App() {
     <ErrorBoundary contactFormLink={contactFormLink}>
       <Routes>
         <Route path="/" element={<Service />} />
-        <Route path="/cookies" element={<ViewCookies serviceName={config.service.serviceName.toLowerCase()} />} />
+        <Route path="/cookies" element={<ViewCookies serviceName={config.service.name.toLowerCase()} />} />
         <Route path="/accessibility" element={
           <AccessibilityStatement
-            serviceName={config.service.serviceName}
+            serviceName={config.service.name}
             definition={config.service.definition}
           />}
         />

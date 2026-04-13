@@ -191,8 +191,8 @@ export default function NewWebChatComponent() {
       <GenesysChatComponent
         deploymentId={config.newChatComponent.deploymentId}
         localStorageKey={config.newChatComponent.localStorageKey}
-        serviceName={config.newChatComponent.serviceName}
-        serviceSubText={config.newChatComponent.serviceSubText}
+        serviceName={config.newChatComponent.name}
+        serviceSubText={config.newChatComponent.subText}
         errorContactLink={config.newChatComponent.errorContactLink}
       />
     </ErrorBoundary>

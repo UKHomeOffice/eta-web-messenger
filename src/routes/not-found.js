@@ -26,7 +26,7 @@ export default function NotFound() {
           If you need support and it's outside of normal working hours, you can use one of the following contact forms:
         </p>
         <p className="govuk-body">
-          {config.service.serviceName}:
+          {config.service.name}:
           &nbsp;<a id="not-found-link"
             data-testid="not-found-link"
             className="govuk-link govuk-link--no-visited-state" 

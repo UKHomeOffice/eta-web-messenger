@@ -17,8 +17,8 @@ module.exports = {
     definition: 'electronic travel authorisation',
     deploymentId: getEnvValueByKey('ETA_DEPLOYMENT_ID'),
     localStorageKey: 'eta-genesys-session',
-    serviceName: 'ETA',
-    serviceSubText: 'an ETA (electronic travel authorisation).',
+    name: 'ETA',
+    subText: 'an ETA (electronic travel authorisation).',
     errorContactLink: 'https://www.ask-question-about-electronic-travel-authorisation.homeoffice.gov.uk',
     gaUtmParam: '?utm_source=webmessenger&utm_medium=internal_link&utm_campaign=ETA_Internal_WebMessenger'
   },
