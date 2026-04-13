@@ -13,9 +13,7 @@ import './styles/styles.scss';
 loadEnvironmentConfig(() => {
   const path = window.location.pathname.toLowerCase();
 
-  let supportType = 'ETA';
-
-  document.title = `Webchat: UK ${supportType} support - GOV.UK`;
+  document.title = 'Webchat: UK ETA support - GOV.UK';
 
   const RootLayout = require('./components/layout/layout').default;
   const { App } = require('./App');

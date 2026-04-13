@@ -1,6 +1,6 @@
 import { Routes, Route } from 'react-router';
 import config from '../config';
-import Service from './routes/service';
+import Eta from './routes/index';
 import ViewCookies from './components/cookies/view-cookies';
 import AccessibilityStatement from './components/accessibility/statement';
 import NotFound from './routes/not-found';
@@ -13,7 +13,7 @@ export function App() {
   return (
     <ErrorBoundary contactFormLink={contactFormLink}>
       <Routes>
-        <Route path="/" element={<Service />} />
+        <Route path="/" element={<Eta />} />
         <Route path="/cookies" element={<ViewCookies serviceName={config.service.name.toLowerCase()} />} />
         <Route path="/accessibility" element={
           <AccessibilityStatement

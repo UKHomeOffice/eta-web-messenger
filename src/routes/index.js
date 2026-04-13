@@ -1,7 +1,7 @@
 import GenesysChatComponent from '../components/genesys-chat-component';
 import config from '../../config';
 
-export default function Service() {
+export default function Eta() {
   return (
     <GenesysChatComponent
       deploymentId={config.service.deploymentId}
