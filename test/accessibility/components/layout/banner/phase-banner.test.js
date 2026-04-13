@@ -5,14 +5,6 @@ import PhaseBanner from '../../../../../src/components/layout/banner/phase-banne
 const { axe, toHaveNoViolations } = require('jest-axe');
 expect.extend(toHaveNoViolations);
 
-jest.mock('../../../../../utils/feedback', () => ({
-  getFeedbackUrl: jest.fn(() => ({
-    production: {
-      eta: 'eta-url'
-    }
-  }))
-}));
-
 describe('PhaseBanner component', () => {
 
   test('renders PhaseBanner component with no accessibility violations', async () => {

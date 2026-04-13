@@ -25,8 +25,5 @@ module.exports = {
   statementDate: '(10 November 2025)',
   statementReviewedDate: '(10 November 2025)',
   websiteUpdates: '(30 October 2025)',
-  logApiEndpoint: getEnvValueByKey('LOG_ENDPOINT'),
-  feedback: {
-    eta: 'https://ukhomeoffice.qualtrics.com/jfe/form/SV_396eOdMT06w04YK'
-  }
+  logApiEndpoint: getEnvValueByKey('LOG_ENDPOINT')
 };
