@@ -16,8 +16,6 @@ export default defineConfig([
     ignores: [      
       '**/node_modules',
       '**/build',
-      '**/dist/**/*.js',
-      '**/coverage/**/*.js',
       '**/public',
       '*.min.js',
       '*.config.js',
