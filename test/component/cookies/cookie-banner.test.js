@@ -35,15 +35,14 @@ describe('CookieBanner', () => {
 
     const banner = screen.getByLabelText(/Cookies on UK Visas and Immigration services/i);
     expect(banner).toBeInTheDocument();
-    expect(banner).toHaveAttribute('id', 'eta-main-cookie-banner');
+    expect(banner).toHaveAttribute('id', 'main-cookie-banner');
 
     const acceptanceButton = screen.getByRole('button', { name: /Accept analytics cookies/i });
     expect(acceptanceButton).toBeInTheDocument();
-    expect(acceptanceButton).toHaveAttribute('id', 'eta-cookies-accept');
-
+    expect(acceptanceButton).toHaveAttribute('id', 'cookies-accept');
     const rejectionButton = screen.getByRole('button', { name: /Reject analytics cookies/i });
     expect(rejectionButton).toBeInTheDocument();
-    expect(rejectionButton).toHaveAttribute('id', 'eta-cookies-reject');
+    expect(rejectionButton).toHaveAttribute('id', 'cookies-reject');
 
     expect(window.scrollTo).toHaveBeenCalled();
   });

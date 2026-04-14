@@ -1,5 +1,4 @@
 import { Routes, Route } from 'react-router';
-import config from '../config';
 import Eta from './routes/index';
 import ViewCookies from './components/cookies/view-cookies';
 import AccessibilityStatement from './components/accessibility/statement';
@@ -8,10 +7,9 @@ import EndChatConfirmation from './components/chat/end-chat-confirmation';
 import { ErrorBoundary } from './error/error-boundary';
 
 export function App() {
-  const contactFormLink = config.service.errorContactLink;
 
   return (
-    <ErrorBoundary contactFormLink={contactFormLink}>
+    <ErrorBoundary>
       <Routes>
         <Route path="/" element={<Eta />} />
         <Route path="/cookies" element={<ViewCookies />} />

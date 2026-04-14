@@ -24,7 +24,7 @@ import { ErrorBoundary } from '../../src/error/error-boundary.js';
 
 const renderComponentWithRouter = (component) => render(
   <MemoryRouter>
-    <ErrorBoundary contactFormLink="https://www.ask-question-about-electronic-travel-authorisation.homeoffice.gov.uk">
+    <ErrorBoundary>
       {component}
     </ErrorBoundary>
   </MemoryRouter>

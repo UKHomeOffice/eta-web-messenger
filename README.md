@@ -187,7 +187,7 @@ In order to add a new chat service, the follow key elements will need to be impl
 ```
 export default function NewWebChatComponent() {
   return (
-    <ErrorBoundary contactFormLink={config.newChatComponent.errorContactLink}>
+    <ErrorBoundary>
       <GenesysChatComponent
         deploymentId={config.newChatComponent.deploymentId}
         localStorageKey={config.newChatComponent.localStorageKey}

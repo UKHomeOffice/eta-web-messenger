@@ -13,7 +13,6 @@ export default function CookieBanner() {
   const [cookiesAccepted, setCookiesAccepted] = useState(null);
   const [showCookieAcceptanceMessage, setShowCookieAcceptanceMessage] = useState(false);
 
-  const serviceName = config.service.name.toLowerCase();
   const cookiePolicy = config.service.cookiePolicy;
 
   useEffect(() => {
@@ -50,10 +49,10 @@ export default function CookieBanner() {
       {showCookieBanner &&
         <div className="govuk-cookie-banner" 
           data-nosnippet 
-          id={`${serviceName}-main-cookie-banner`} 
+          id="main-cookie-banner" 
           aria-label="Cookies on UK Visas and Immigration services"
         >
-          <div className="govuk-cookie-banner__message govuk-width-container" id={`${serviceName}-main-cookie-message`}>
+          <div className="govuk-cookie-banner__message govuk-width-container" id="main-cookie-message">
             <div className="govuk-grid-row">
               <div className="govuk-grid-column-two-thirds">
                 <h2 className="govuk-cookie-banner__heading govuk-heading-m">
@@ -73,7 +72,7 @@ export default function CookieBanner() {
                 type="button" 
                 className="govuk-button" 
                 data-module="govuk-button" 
-                id={`${serviceName}-cookies-accept`} 
+                id="cookies-accept" 
                 onClick={() => setCookiePolicy(true)}
               >
                 Accept analytics cookies
@@ -82,7 +81,7 @@ export default function CookieBanner() {
                 type="button" 
                 className="govuk-button" 
                 data-module="govuk-button" 
-                id={`${serviceName}-cookies-reject`} 
+                id="cookies-reject" 
                 onClick={() => setCookiePolicy(false)}
               >
                 Reject analytics cookies
@@ -101,7 +100,6 @@ export default function CookieBanner() {
         <CookieAcceptance
           accepted={cookiesAccepted}
           hideCookieMessage={hideCookieAcceptanceMessage}
-          serviceName={serviceName}
           cookiePolicy={cookiePolicy}
         />
       }

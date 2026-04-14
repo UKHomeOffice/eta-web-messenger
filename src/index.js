@@ -11,8 +11,6 @@ import './styles/styles.scss';
  * or in production.
  */
 loadEnvironmentConfig(() => {
-  const path = window.location.pathname.toLowerCase();
-
   document.title = 'Webchat: UK ETA support - GOV.UK';
 
   const RootLayout = require('./components/layout/layout').default;
@@ -23,7 +21,7 @@ loadEnvironmentConfig(() => {
     <ConversationProvider>
       <BrowserRouter>
         <RootLayout>
-          <App path={path} />
+          <App />
         </RootLayout>
       </BrowserRouter>
     </ConversationProvider>
