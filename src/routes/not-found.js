@@ -1,3 +1,5 @@
+import config from '../../config';
+
 export default function NotFound() {
   return (
     <div className="govuk-grid-row">
@@ -21,32 +23,15 @@ export default function NotFound() {
         </p>
         <h2 className="govuk-heading-m">Need help outside of working hours?</h2>
         <p className="govuk-body">
-          If you need support and it's outside of normal working hours, you can use one of the following contact forms:
+          If you need support and it's outside of normal working hours, you can use the following contact form for ETA:
         </p>
         <p className="govuk-body">
-          ETA:
-          &nbsp;<a id="eta-not-found-link"
-            data-testid="eta-not-found-link"
+          <a id="not-found-link"
+            data-testid="not-found-link"
             className="govuk-link govuk-link--no-visited-state" 
-            href="https://www.ask-question-about-electronic-travel-authorisation.homeoffice.gov.uk">
-              https://www.ask-question-about-electronic-travel-authorisation.homeoffice.gov.uk</a>
-        </p>        
-        <p className="govuk-body">
-          EUSS:
-          &nbsp;<a id="euss-not-found-link"
-            data-testid="euss-not-found-link"
-            className="govuk-link govuk-link--no-visited-state" 
-            href="https://eu-settled-status-enquiries.service.gov.uk/start">
-              https://eu-settled-status-enquiries.service.gov.uk/start</a>
-        </p>        
-        <p className="govuk-body">
-          eVisa:
-          &nbsp;<a id="evisa-not-found-link"
-            data-testid="evisa-not-found-link"
-            className="govuk-link govuk-link--no-visited-state"
-            href="https://www.ask-about-getting-access-evisa.homeoffice.gov.uk/start">
-              https://www.ask-about-getting-access-evisa.homeoffice.gov.uk/start</a>
-        </p>  
+            href={config.service.errorContactLink}>
+            {config.service.errorContactLink}</a>
+        </p>
       </div>
     </div>
   );

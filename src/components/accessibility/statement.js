@@ -4,11 +4,11 @@ import EnforcementProcedureSection from './enforcement-section';
 import ComplianceStatusSection from './compliance-section';
 import TechnicalInformationSection from './technical-information-section';
 
-export default function AccessibilityStatement({ serviceName, definition }) {
+export default function AccessibilityStatement() {
   return (
     <>
       <h1 className="govuk-heading-xl">
-        Accessibility statement for ask about {definition} ({serviceName})
+        Accessibility statement for ask about electronic travel authorisation (ETA)
       </h1>
 
       <p className="govuk-body">

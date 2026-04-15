@@ -14,7 +14,7 @@ jest.mock('../../src/genesys/genesys-service.js', () => ({
 import '@testing-library/jest-dom';
 import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router';
-import Eta from '../../src/routes/eta';
+import Eta from '../../src/routes/index';
 import {
   initialiseGenesysConversation,
   subscribeToErrors,
@@ -24,7 +24,7 @@ import { ErrorBoundary } from '../../src/error/error-boundary.js';
 
 const renderComponentWithRouter = (component) => render(
   <MemoryRouter>
-    <ErrorBoundary contactFormLink="https://www.ask-question-about-electronic-travel-authorisation.homeoffice.gov.uk">
+    <ErrorBoundary>
       {component}
     </ErrorBoundary>
   </MemoryRouter>

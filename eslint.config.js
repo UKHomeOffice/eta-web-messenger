@@ -7,11 +7,15 @@ import importPlugin from 'eslint-plugin-import';
 
 export default defineConfig([
   {
+    ignores: [
+      'dist/**',
+      'coverage/**'
+    ]
+  },
+  {
     ignores: [      
       '**/node_modules',
       '**/build',
-      '**/dist/**/*.js',
-      '**/coverage/**/*.js',
       '**/public',
       '*.min.js',
       '*.config.js',

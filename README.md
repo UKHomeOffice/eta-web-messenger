@@ -15,8 +15,6 @@
 Home Office service for web messengers. This service provides 3 web messenger, chat bot style services for public use. The 3 services included in this application are:
 
 - ETA (Electronic Travel Authorisation)
-- EUSS (EU Settlement Scheme)
-- eVisa
 
 
 Each messenger integrates with [Genesys Web Messenger](https://help.mypurecloud.com/articles/web-messaging-overview/), which provides automated bot interactions based on specific knowledge bases for each service, whilst also providing human interaction and support through live agents.
@@ -62,8 +60,6 @@ Example `env.json`:
 ```json
 {
   "ETA_DEPLOYMENT_ID": "REPLACE_ME",
-  "EVISA_DEPLOYMENT_ID": "REPLACE_ME",
-  "EUSS_DEPLOYMENT_ID": "REPLACE_ME",
   "GENESYS_ENVIRONMENT": "REPLACE_ME",
   "GOOGLE_TAG_MANAGER_ID": "REPLACE_ME",
   "ENABLE_ANALYTICS": false,
@@ -136,8 +132,6 @@ docker build -t web-messengers:local .
 
 ```ini
 ETA_DEPLOYMENT_ID=REPLACE_ME
-EVISA_DEPLOYMENT_ID=REPLACE_ME
-EUSS_DEPLOYMENT_ID=REPLACE_ME
 GENESYS_ENVIRONMENT=REPLACE_ME
 GOOGLE_TAG_MANAGER_ID=REPLACE_ME
 ENABLE_ANALYTICS=false
@@ -193,12 +187,12 @@ In order to add a new chat service, the follow key elements will need to be impl
 ```
 export default function NewWebChatComponent() {
   return (
-    <ErrorBoundary contactFormLink={config.newChatComponent.errorContactLink}>
+    <ErrorBoundary>
       <GenesysChatComponent
         deploymentId={config.newChatComponent.deploymentId}
         localStorageKey={config.newChatComponent.localStorageKey}
-        serviceName={config.newChatComponent.serviceName}
-        serviceSubText={config.newChatComponent.serviceSubText}
+        serviceName={config.newChatComponent.name}
+        serviceSubText={config.newChatComponent.subText}
         errorContactLink={config.newChatComponent.errorContactLink}
       />
     </ErrorBoundary>

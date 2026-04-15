@@ -4,13 +4,16 @@ import Cookies from 'js-cookie';
 import CookieAcceptance from './cookie-acceptance';
 import updateCookieSettings from './utils';
 import { useCookieBannerVisibility } from './cookie-banner-visibility-provider';
+import config from '../../../config';
 
-export default function CookieBanner({ serviceName, cookiePolicy }) {
+export default function CookieBanner() {
 
   const { showCookieBanner, setShowCookieBanner } = useCookieBannerVisibility();
 
   const [cookiesAccepted, setCookiesAccepted] = useState(null);
   const [showCookieAcceptanceMessage, setShowCookieAcceptanceMessage] = useState(false);
+
+  const cookiePolicy = config.service.cookiePolicy;
 
   useEffect(() => {
     const cookie = Cookies.get(cookiePolicy);
@@ -46,10 +49,10 @@ export default function CookieBanner({ serviceName, cookiePolicy }) {
       {showCookieBanner &&
         <div className="govuk-cookie-banner" 
           data-nosnippet 
-          id={`${serviceName}-main-cookie-banner`} 
+          id="main-cookie-banner" 
           aria-label="Cookies on UK Visas and Immigration services"
         >
-          <div className="govuk-cookie-banner__message govuk-width-container" id={`${serviceName}-main-cookie-message`}>
+          <div className="govuk-cookie-banner__message govuk-width-container" id="main-cookie-message">
             <div className="govuk-grid-row">
               <div className="govuk-grid-column-two-thirds">
                 <h2 className="govuk-cookie-banner__heading govuk-heading-m">
@@ -69,7 +72,7 @@ export default function CookieBanner({ serviceName, cookiePolicy }) {
                 type="button" 
                 className="govuk-button" 
                 data-module="govuk-button" 
-                id={`${serviceName}-cookies-accept`} 
+                id="cookies-accept" 
                 onClick={() => setCookiePolicy(true)}
               >
                 Accept analytics cookies
@@ -78,18 +81,14 @@ export default function CookieBanner({ serviceName, cookiePolicy }) {
                 type="button" 
                 className="govuk-button" 
                 data-module="govuk-button" 
-                id={`${serviceName}-cookies-reject`} 
+                id="cookies-reject" 
                 onClick={() => setCookiePolicy(false)}
               >
                 Reject analytics cookies
               </button>
               <Link 
                 className="govuk-link view-cookie-link" 
-                to={`/${serviceName}/cookies`}
-                state={{ 
-                  cookiePolicy,
-                  serviceName
-                }}
+                to="/cookies"
               >
                 View cookies
               </Link>
@@ -101,7 +100,6 @@ export default function CookieBanner({ serviceName, cookiePolicy }) {
         <CookieAcceptance
           accepted={cookiesAccepted}
           hideCookieMessage={hideCookieAcceptanceMessage}
-          serviceName={serviceName}
           cookiePolicy={cookiePolicy}
         />
       }

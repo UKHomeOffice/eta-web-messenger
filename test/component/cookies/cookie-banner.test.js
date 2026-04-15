@@ -12,8 +12,7 @@ jest.mock('react-router', () => ({
   Link: ({ children, ...props }) => <a {...props}>{children}</a>
 }));
 
-const serviceName = 'test-service';
-const cookiePolicy = 'test-cookie-policy';
+const cookiePolicy = 'eta_cookie_policy';
 
 beforeEach(() => {
   Cookies.get.mockClear();
@@ -32,32 +31,31 @@ const renderWithProvider = (component) => {
 describe('CookieBanner', () => {
   test('renders cookie banner when cookie not set', () => {
     Cookies.get.mockReturnValue(undefined);
-    renderWithProvider(<CookieBanner serviceName={serviceName} cookiePolicy={cookiePolicy} />);
+    renderWithProvider(<CookieBanner />);
 
     const banner = screen.getByLabelText(/Cookies on UK Visas and Immigration services/i);
     expect(banner).toBeInTheDocument();
-    expect(banner).toHaveAttribute('id', 'test-service-main-cookie-banner');
+    expect(banner).toHaveAttribute('id', 'main-cookie-banner');
 
     const acceptanceButton = screen.getByRole('button', { name: /Accept analytics cookies/i });
     expect(acceptanceButton).toBeInTheDocument();
-    expect(acceptanceButton).toHaveAttribute('id', 'test-service-cookies-accept');
-
+    expect(acceptanceButton).toHaveAttribute('id', 'cookies-accept');
     const rejectionButton = screen.getByRole('button', { name: /Reject analytics cookies/i });
     expect(rejectionButton).toBeInTheDocument();
-    expect(rejectionButton).toHaveAttribute('id', 'test-service-cookies-reject');
+    expect(rejectionButton).toHaveAttribute('id', 'cookies-reject');
 
     expect(window.scrollTo).toHaveBeenCalled();
   });
 
   test('does not render cookie banner when cookie is set', () => {
     Cookies.get.mockReturnValue('true');
-    renderWithProvider(<CookieBanner serviceName={serviceName} cookiePolicy={cookiePolicy} />);
+    renderWithProvider(<CookieBanner />);
     expect(screen.queryByLabelText(/Cookies on UK Visas and Immigration services/i)).not.toBeInTheDocument();
   });
 
   test('accepts analytics cookies and renders acceptance message', async () => {
     Cookies.get.mockReturnValue(undefined);
-    renderWithProvider(<CookieBanner serviceName={serviceName} cookiePolicy={cookiePolicy} />);
+    renderWithProvider(<CookieBanner />);
     
     await userEvent.click(screen.getByText(/Accept analytics cookies/i));
     
@@ -70,12 +68,12 @@ describe('CookieBanner', () => {
 
     const cookieSettingsLink = screen.getByTestId('change-cookie-settings');
     expect(cookieSettingsLink).toBeInTheDocument();
-    expect(cookieSettingsLink).toHaveAttribute('to', `/${serviceName}/cookies`);
+    expect(cookieSettingsLink).toHaveAttribute('to', '/cookies');
   });
 
   test('rejects analytics cookies and renders rejection message', async () => {
     Cookies.get.mockReturnValue(undefined);
-    renderWithProvider(<CookieBanner serviceName={serviceName} cookiePolicy={cookiePolicy} />);
+    renderWithProvider(<CookieBanner />);
     
     await userEvent.click(screen.getByText(/Reject analytics cookies/i));
     
@@ -88,22 +86,22 @@ describe('CookieBanner', () => {
 
     const cookieSettingsLink = screen.getByTestId('change-cookie-settings');
     expect(cookieSettingsLink).toBeInTheDocument();
-    expect(cookieSettingsLink).toHaveAttribute('to', `/${serviceName}/cookies`);
+    expect(cookieSettingsLink).toHaveAttribute('to', '/cookies');
   });
 
   test('shows "View cookies" link', () => {
     Cookies.get.mockReturnValue(undefined);
-    renderWithProvider(<CookieBanner serviceName={serviceName} cookiePolicy={cookiePolicy} />);
+    renderWithProvider(<CookieBanner />);
 
     const link = screen.getByText(/View cookies/i);
 
     expect(link).toBeInTheDocument();
-    expect(link).toHaveAttribute('to', `/${serviceName}/cookies`);
+    expect(link).toHaveAttribute('to', '/cookies');
   });
 
   test('hides cookie acceptance message when hideCookieMessage is called', async () => {
     Cookies.get.mockReturnValue(undefined);
-    renderWithProvider(<CookieBanner serviceName={serviceName} cookiePolicy={cookiePolicy} />);
+    renderWithProvider(<CookieBanner />);
 
     await userEvent.click(screen.getByText(/Accept analytics cookies/i));
     

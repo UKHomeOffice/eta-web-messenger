@@ -9,7 +9,7 @@ function ProblemChild() {
 describe('ErrorBoundary', () => {
   it('should render children when no error', () => {
     render(
-      <ErrorBoundary contactFormLink="/contact">
+      <ErrorBoundary>
         <div>Safe Child</div>
       </ErrorBoundary>
     );
@@ -18,7 +18,7 @@ describe('ErrorBoundary', () => {
 
   it('should catch errors and display fallback UI', () => {
     render(
-      <ErrorBoundary contactFormLink="/contact">
+      <ErrorBoundary>
         <ProblemChild />
       </ErrorBoundary>
     );
@@ -29,6 +29,6 @@ describe('ErrorBoundary', () => {
     expect(screen.getByText(/We will reply in 3 to 5 working days/i)).toBeInTheDocument();
 
     const contactLink = screen.getByTestId('error-contact-form');
-    expect(contactLink).toHaveAttribute('href', expect.stringContaining('/contact'));
+    expect(contactLink).toHaveAttribute('href', expect.stringContaining('https://www.ask-question-about-electronic-travel-authorisation.homeoffice.gov.uk'));
   });
 });

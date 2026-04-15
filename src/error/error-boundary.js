@@ -1,6 +1,7 @@
 import React from 'react';
 import ErrorComponent from '../components/error/error-component';
 import logData from '../components/utils/logging';
+import config from '../../config';
 
 /**
  * A React error boundary component that catches JavaScript errors anywhere in its child component tree,
@@ -44,7 +45,7 @@ export class ErrorBoundary extends React.Component {
 
   render() {
     if (this.state.hasError) {
-      return <ErrorComponent contactFormLink={this.props.contactFormLink}/>;
+      return <ErrorComponent contactFormLink={config.service.errorContactLink}/>;
     }
 
     return this.props.children;

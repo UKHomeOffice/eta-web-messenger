@@ -17,7 +17,7 @@ describe('OutboundTextMessage component', () => {
 
     const messages = screen.getAllByTestId('outbound-message');
     expect(messages).toHaveLength(1);
-    expect(messages[0]).toHaveTextContent('Welcome to EVisa webchat, in few word how can i help you today?');
+    expect(messages[0]).toHaveTextContent('Hello and welcome to the ETA webchat service. Please ask me a question relating to the ETA process. You\'re communicating with a computer. Please do not disclose any personal or sensitive information.');
     expect(messages[0]).toHaveTextContent('Digital assistant at 09:38');
   });
 
@@ -37,9 +37,7 @@ describe('OutboundTextMessage component', () => {
   });
 
   test.each([
-    'eta',
-    'euss',
-    'evisa'
+    'eta'
   ])('renders OutboundTextMessage component with correct UTM parameters when text contains link', (serviceName) => {
 
     const message = {

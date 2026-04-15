@@ -11,17 +11,7 @@ import './styles/styles.scss';
  * or in production.
  */
 loadEnvironmentConfig(() => {
-  const path = window.location.pathname.toLowerCase();
-
-  let supportType = 'ETA';
-
-  if (path.includes('euss')) {
-    supportType = 'EUSS';
-  } else if (path.includes('evisa')) {
-    supportType = 'eVisa';
-  }
-
-  document.title = `Webchat: UK ${supportType} support - GOV.UK`;
+  document.title = 'Webchat: UK ETA support - GOV.UK';
 
   const RootLayout = require('./components/layout/layout').default;
   const { App } = require('./App');
@@ -31,7 +21,7 @@ loadEnvironmentConfig(() => {
     <ConversationProvider>
       <BrowserRouter>
         <RootLayout>
-          <App path={path} />
+          <App />
         </RootLayout>
       </BrowserRouter>
     </ConversationProvider>

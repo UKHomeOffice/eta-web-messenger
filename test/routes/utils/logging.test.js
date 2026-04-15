@@ -26,22 +26,6 @@ describe('logToService', () => {
     expect(body).not.toHaveProperty('metadata');
   });
 
-  it('should set supportType to EUSS if pathname includes "euss"', async () => {
-    window.history.replaceState({}, '', '/euss/path');
-    await logToService('warn', 'EUSS test');
-
-    const body = JSON.parse(global.fetch.mock.calls[0][1].body);
-    expect(body.service).toBe('EUSS Web Messenger');
-  });
-
-  it('should set supportType to eVisa if pathname includes "evisa"', async () => {
-    window.history.replaceState({}, '', '/evisa/path');
-    await logToService('error', 'eVisa test');
-
-    const body = JSON.parse(global.fetch.mock.calls[0][1].body);
-    expect(body.service).toBe('eVisa Web Messenger');
-  });
-
   it('should include metadata if provided', async () => {
     window.history.replaceState({}, '', '/');
     const metadata = { id: 123, action: 'test' };

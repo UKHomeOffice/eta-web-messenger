@@ -6,8 +6,7 @@ import CookieAcceptance from '../../../src/components/cookies/cookie-acceptance'
 describe('CookieAcceptance', () => {
   const defaultProps = {
     accepted: true,
-    hideCookieMessage: jest.fn(),
-    serviceName: 'eta'
+    hideCookieMessage: jest.fn()
   };
 
   test('renders accepted message when accepted is true', () => {
@@ -36,7 +35,7 @@ describe('CookieAcceptance', () => {
     );
     const link = screen.getByTestId('change-cookie-settings');
     expect(link).toBeInTheDocument();
-    expect(link).toHaveAttribute('href', '/eta/cookies');
+    expect(link).toHaveAttribute('href', '/cookies');
   });
 
   test('calls hideCookieMessage when hide button is clicked', () => {
@@ -56,7 +55,7 @@ describe('CookieAcceptance', () => {
         <CookieAcceptance {...defaultProps} />
       </BrowserRouter>
     );
-    expect(screen.getByRole('alert')).toHaveAttribute('id', 'eta-cookies-accept-message');
-    expect(screen.getByRole('button')).toHaveAttribute('id', 'eta-hide-accept-message');
+    expect(screen.getByRole('alert')).toHaveAttribute('id', 'cookies-accept-message');
+    expect(screen.getByRole('button')).toHaveAttribute('id', 'hide-accept-message');
   });
 });

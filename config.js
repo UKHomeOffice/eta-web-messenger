@@ -13,40 +13,19 @@ module.exports = {
   botMetaDisplay: 'Digital assistant',
   userMetaDisplay: 'You',
   maxCharacterLimit: 4096,
-  eta: {
-    definition: 'electronic travel authorisation',
+  service: {
     deploymentId: getEnvValueByKey('ETA_DEPLOYMENT_ID'),
     localStorageKey: 'eta-genesys-session',
-    serviceName: 'ETA',
-    serviceSubText: 'an ETA (electronic travel authorisation).',
+    name: 'ETA',
+    subText: 'an ETA (electronic travel authorisation).',
+    cookiePolicy: 'eta_cookie_policy',
     errorContactLink: 'https://www.ask-question-about-electronic-travel-authorisation.homeoffice.gov.uk',
     gaUtmParam: '?utm_source=webmessenger&utm_medium=internal_link&utm_campaign=ETA_Internal_WebMessenger'
   },
-  evisa: {
-    definition: 'electronic visa',
-    deploymentId: getEnvValueByKey('EVISA_DEPLOYMENT_ID'),
-    localStorageKey: 'evisa-genesys-session',
-    serviceName: 'eVisa',
-    serviceSubText: 'an eVisa.',
-    errorContactLink: 'https://www.ask-about-getting-access-evisa.homeoffice.gov.uk/start',
-    gaUtmParam: '?utm_source=webmessenger&utm_medium=internal_link&utm_campaign=EVISA_Internal_WebMessenger'
-  },
-  euss: {
-    definition: 'EU settlement scheme',
-    deploymentId: getEnvValueByKey('EUSS_DEPLOYMENT_ID'),
-    localStorageKey: 'euss-genesys-session',
-    serviceName: 'EUSS',
-    serviceSubText: 'the EUSS (EU Settlement Service).',
-    errorContactLink: 'https://eu-settled-status-enquiries.service.gov.uk/start',
-    gaUtmParam: '?utm_source=webmessenger&utm_medium=internal_link&utm_campaign=EUSS_Internal_WebMessenger'
-  },
-  statementDate: '(10 November 2025)',
-  statementReviewedDate: '(10 November 2025)',
-  websiteUpdates: '(30 October 2025)',
-  logApiEndpoint: getEnvValueByKey('LOG_ENDPOINT'),
-  feedback: {
-    eta: 'https://ukhomeoffice.qualtrics.com/jfe/form/SV_396eOdMT06w04YK',
-    evisa: 'https://homeoffice.eu.qualtrics.com/jfe/form/SV_0iJqpkEWRXvXlgW',
-    euss: 'https://ukhomeoffice.qualtrics.com/jfe/form/SV_5gmFakdRFxtnL8y'
-  }
+  accessibility: {
+    statementDate: '(10 November 2025)',
+    statementReviewedDate: '(10 November 2025)',
+    websiteUpdates: '(30 October 2025)'
+  }, 
+  logApiEndpoint: getEnvValueByKey('LOG_ENDPOINT')
 };

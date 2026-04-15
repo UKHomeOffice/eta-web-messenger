@@ -10,14 +10,14 @@ platform:
 environment:
   APP_NAME: ukiwc
   UAT_ENV: sas-web-messengers-uat
-  GIT_REPO: UKHomeOffice/web-messengers
+  GIT_REPO: UKHomeOffice/eta-web-messenger
   HOF_CONFIG: hof-services-config/Ukimmigration-Support-Webchat
   BRANCH_ENV: sas-web-messengers-branch
   STG_ENV: sas-web-messengers-stg
   PROD_ENV: sas-web-messengers-prod
   PRODUCTION_URL: ukimmigration-support-webchat.homeoffice.gov.uk
   IMAGE_URL: 340268328991.dkr.ecr.eu-west-2.amazonaws.com
-  IMAGE_REPO: so/webmessengers
+  IMAGE_REPO: so/eta-web-messenger
   NON_PROD_AVAILABILITY: Mon-Fri 00:00-23:59 Europe/London
   READY_FOR_TEST_DELAY: 20s
   NOTIFY_STUB: stub
@@ -46,7 +46,7 @@ lint: &lint
   environment:
     NOTIFY_KEY: USE_MOCK
   commands:
-    - yarn lint
+    - yarn lint:ci
 
 unit_tests: &unit_tests
   pull: if-not-exists
@@ -57,8 +57,8 @@ unit_tests: &unit_tests
     - yarn run test:unit
 
 sonar_scanner: &sonar_scanner
-  pull: if-not-exists
-  image: quay.io/ukhomeofficedigital/sonar-scanner-nodejs:latest
+  pull: always
+  image: quay.io/ukhomeofficedigital/sonar-scanner:latest
   commands:
     - sonar-scanner -Dproject.settings=./sonar-project.properties
 
@@ -131,7 +131,7 @@ steps:
     commands:
       # wait for docker service to be up before running docker build
       - /usr/local/bin/wait
-      - docker build -t so/webmessengers:$${DRONE_COMMIT_SHA} .
+      - docker build -t so/eta-web-messenger:$${DRONE_COMMIT_SHA} .
     volumes:
       - name: dockersock
         path: /var/run
@@ -151,7 +151,7 @@ steps:
         from_secret: AWS_ACCESS_KEY_ID
       secret_key:
         from_secret: AWS_SECRET_ACCESS_KEY
-      repo: so/webmessengers
+      repo: so/eta-web-messenger
       registry: 340268328991.dkr.ecr.eu-west-2.amazonaws.com
       tags:
         - latest
@@ -171,7 +171,7 @@ steps:
         cpu: 1000
         memory: 1024Mi
     environment:
-      IMAGE_NAME: so/webmessengers:${DRONE_COMMIT_SHA}
+      IMAGE_NAME: so/eta-web-messenger:${DRONE_COMMIT_SHA}
       SEVERITY: MEDIUM,HIGH,CRITICAL
       FAIL_ON_DETECTION: false
       IGNORE_UNFIXED: false
@@ -352,7 +352,7 @@ steps:
     commands:
       # wait for docker service to be up before running docker build
       - /usr/local/bin/wait
-      - docker build --no-cache -t so/webmessengers:${DRONE_COMMIT_SHA} .
+      - docker build --no-cache -t so/eta-web-messenger:${DRONE_COMMIT_SHA} .
     volumes:
       - name: dockersock
         path: /var/run
@@ -379,7 +379,7 @@ steps:
     image: 340268328991.dkr.ecr.eu-west-2.amazonaws.com/acp/trivy/client:latest
     pull: always
     environment:
-        IMAGE_NAME: so/webmessengers:${DRONE_COMMIT_SHA}
+        IMAGE_NAME: so/eta-web-messenger:${DRONE_COMMIT_SHA}
         SERVICE_URL: https://acp-trivy-helm.acp-trivy.svc.cluster.local:443
         SEVERITY: UNKNOWN,LOW,MEDIUM,HIGH,CRITICAL --dependency-tree
         FAIL_ON_DETECTION: false
@@ -421,7 +421,7 @@ steps:
     image: plugins/slack
     settings:
       failure: ignore
-      template: "CRON Job {{build.deployTo}} of Webmessengers has {{build.status}} - <{{build.link}}|#{{build.number}}> {{#success build.status}}\n  :thumbsup: :thumbsup: :thumbsup:\n{{else}}\n  :x: :x: :x:\n{{/success}} Author: {{build.author}}\n\nDuration: {{since job.started}}\n\nJob: <{{build.link}}|#{{build.number}}>\n\nCommit: {{build.commit}}\n"
+      template: "CRON Job {{build.deployTo}} of ETA Web Messenger has {{build.status}} - <{{build.link}}|#{{build.number}}> {{#success build.status}}\n  :thumbsup: :thumbsup: :thumbsup:\n{{else}}\n  :x: :x: :x:\n{{/success}} Author: {{build.author}}\n\nDuration: {{since job.started}}\n\nJob: <{{build.link}}|#{{build.number}}>\n\nCommit: {{build.commit}}\n"
       webhook:
         from_secret: slack_webhook
     when:

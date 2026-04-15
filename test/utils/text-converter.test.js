@@ -37,9 +37,7 @@ describe('convertToMarkdown', () => {
   });
 
   test.each([
-    'eta',
-    'euss',
-    'evisa'
+    'eta'
   ])('adds %s utm param to URLs when service is %s', (serviceName) => {
     const input = 'Visit https://example.com for more info';
     const result = convertToMarkdown(input, serviceName);
@@ -95,9 +93,7 @@ describe('convertHtmlWithLinkText', () => {
   });
 
   test.each([
-    'eta',
-    'euss',
-    'evisa'
+    'eta'
   ])('renders URL links with correct utm parameters for %s service', (serviceName) => {
     const input = 'Visit https://example.com for more info';
     const result = convertHtmlWithLinkText(input, serviceName);

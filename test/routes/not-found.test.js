@@ -36,16 +36,10 @@ describe('Not found page', () => {
     expect(checkText).toHaveTextContent("Check the web address to make sure it's correct.");
 
     const links = screen.getAllByRole('link');
-    expect(links).toHaveLength(3);
+    expect(links).toHaveLength(1);
 
-    expect(screen.getByTestId('eta-not-found-link')).toBeInTheDocument();
-    expect(screen.getByTestId('eta-not-found-link')).toHaveTextContent('https://www.ask-question-about-electronic-travel-authorisation.homeoffice.gov.uk');
-    
-    expect(screen.getByTestId('evisa-not-found-link')).toBeInTheDocument();
-    expect(screen.getByTestId('evisa-not-found-link')).toHaveTextContent('https://www.ask-about-getting-access-evisa.homeoffice.gov.uk/start');
-    
-    expect(screen.getByTestId('euss-not-found-link')).toBeInTheDocument();
-    expect(screen.getByTestId('euss-not-found-link')).toHaveTextContent('https://eu-settled-status-enquiries.service.gov.uk/start');
+    expect(screen.getByTestId('not-found-link')).toBeInTheDocument();
+    expect(screen.getByTestId('not-found-link')).toHaveTextContent('https://www.ask-question-about-electronic-travel-authorisation.homeoffice.gov.uk');
   });
 });
 

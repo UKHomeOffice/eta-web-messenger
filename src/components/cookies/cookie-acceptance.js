@@ -1,10 +1,10 @@
 import { Link } from 'react-router';
 
-export default function CookieAcceptance({ accepted, hideCookieMessage, serviceName, cookiePolicy }) {
+export default function CookieAcceptance({ accepted, hideCookieMessage, cookiePolicy }) {
   return (
     <div className="govuk-cookie-banner__message govuk-width-container" 
       data-testid="cookies-acceptance-message" 
-      id={`${serviceName}-cookies-accept-message`} 
+      id="cookies-accept-message" 
       role="alert">
       <div className="govuk-grid-row">
         <div className="govuk-grid-column-two-thirds">
@@ -13,7 +13,7 @@ export default function CookieAcceptance({ accepted, hideCookieMessage, serviceN
               You can <Link 
               data-testid="change-cookie-settings" 
               className="govuk-link" 
-              to={`/${serviceName}/cookies`} 
+              to="/cookies" 
               state={{ cookiePolicy }}>change your cookie settings</Link> at any time.</p>
           </div>
         </div>
@@ -21,7 +21,7 @@ export default function CookieAcceptance({ accepted, hideCookieMessage, serviceN
       <div className="govuk-button-group">
         <button 
           className="govuk-button" 
-          id={`${serviceName}-hide-accept-message`} 
+          id="hide-accept-message" 
           data-module="govuk-button" 
           onClick={hideCookieMessage}
         >

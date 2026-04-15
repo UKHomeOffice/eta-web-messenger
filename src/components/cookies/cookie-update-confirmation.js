@@ -1,6 +1,6 @@
 import { Link } from 'react-router';
 
-export default function CookieUpdateConfirmation({serviceName}) {
+export default function CookieUpdateConfirmation() {
   return (
     <div className="govuk-notification-banner govuk-notification-banner--success" 
       role="alert" aria-labelledby="govuk-notification-banner-title" 
@@ -14,7 +14,7 @@ export default function CookieUpdateConfirmation({serviceName}) {
       <div className="govuk-notification-banner__content">
         <p className="govuk-notification-banner__heading" data-testid="update-cookie-success-message">
           You've set your cookie preferences. 
-          <Link className="govuk-notification-banner__link" to={`/${serviceName}`}>
+          <Link className="govuk-notification-banner__link" to="/">
             Go back to the page you were looking at
           </Link>.
         </p>

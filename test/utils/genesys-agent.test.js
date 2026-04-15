@@ -40,7 +40,7 @@ describe('GeneSys Agent', () => {
   test('getCurrentAgentName should return Agent name', () => {
 
     const expected = 'Chris';
-    const actual = getCurrentAgentName(outboundMessages[5]);
+    const actual = getCurrentAgentName(outboundMessages[3]);
 
     expect(actual).toBe(expected);
   });
@@ -48,7 +48,7 @@ describe('GeneSys Agent', () => {
   test('getCurrentAgentName should return undefined', () => {
 
     const expected = undefined;
-    const actual = getCurrentAgentName(outboundMessages[3]);
+    const actual = getCurrentAgentName(outboundMessages[1]);
     expect(actual).toBe(expected);
   });
 });
