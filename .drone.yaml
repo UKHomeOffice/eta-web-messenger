@@ -46,7 +46,7 @@ lint: &lint
   environment:
     NOTIFY_KEY: USE_MOCK
   commands:
-    - yarn lint
+    - yarn lint:ci
 
 unit_tests: &unit_tests
   pull: if-not-exists

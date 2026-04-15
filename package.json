@@ -10,8 +10,9 @@
     "build-prod": "parcel build --public-url ./ --no-cache --config .parcelrc.prod",
     "serve": "parcel serve -p 8080",
     "test": "TZ=UTC jest --coverage",
-    "lint": "eslint .",
-    "lint:fix": "eslint . --fix",
+    "lint": "eslint src/",
+    "lint:ci": "NODE_OPTIONS=--max-old-space-size=4096 eslint src/",
+    "lint:fix": "eslint src/ --fix",
     "format": "prettier --write \"src/*.{js}\""
   },
   "browserslist": "> 0.25%, not dead",
