@@ -119,6 +119,7 @@ jobs:
           KUBE_TOKEN: ${{ secrets.KUBE_TOKEN_DEV }}
         run: |
           docker run --rm \
+            --entrypoint /bin/sh \
             -v "$PWD":/workspace \
             -w /workspace \
             -e APP_NAME \
@@ -136,7 +137,7 @@ jobs:
             -e KUBE_SERVER \
             -e KUBE_TOKEN \
             "$KD_IMAGE" \
-            sh -c "bin/deploy.sh $BRANCH_ENV"
+            -c "bin/deploy.sh $BRANCH_ENV"
 
   deploy_to_uat:
     runs-on: ubuntu-22.04
@@ -166,6 +167,7 @@ jobs:
           KUBE_TOKEN: ${{ secrets.KUBE_TOKEN_DEV }}
         run: |
           docker run --rm \
+            --entrypoint /bin/sh \
             -v "$PWD":/workspace \
             -w /workspace \
             -e APP_NAME \
@@ -183,7 +185,7 @@ jobs:
             -e KUBE_SERVER \
             -e KUBE_TOKEN \
             "$KD_IMAGE" \
-            sh -c "bin/deploy.sh $UAT_ENV"
+            -c "bin/deploy.sh $UAT_ENV"
 
   get_pr_branch:
     runs-on: ubuntu-22.04
@@ -240,6 +242,7 @@ jobs:
           DRONE_SOURCE_BRANCH: ${{ needs.get_pr_branch.outputs.branch_name }}
         run: |
           docker run --rm \
+            --entrypoint /bin/sh \
             -v "$PWD":/workspace \
             -v "$PWD/.dockersock":/root/.dockersock \
             -w /workspace \
@@ -257,4 +260,4 @@ jobs:
             -e KUBE_SERVER \
             -e KUBE_TOKEN \
             "$KD_IMAGE" \
-            sh -c "bin/deploy.sh tear_down"
+            -c "bin/deploy.sh tear_down"

@@ -86,6 +86,7 @@ jobs:
           KUBE_TOKEN: ${{ secrets.KUBE_TOKEN_PROD }}
         run: |
           docker run --rm \
+            --entrypoint /bin/sh \
             -v "$PWD":/workspace \
             -w /workspace \
             -e APP_NAME \
@@ -103,7 +104,7 @@ jobs:
             -e KUBE_SERVER \
             -e KUBE_TOKEN \
             "$KD_IMAGE" \
-            sh -c "bin/deploy.sh $STG_ENV"
+            -c "bin/deploy.sh $STG_ENV"
 
   deploy_to_prod:
     if: inputs.target == 'PROD'
@@ -130,6 +131,7 @@ jobs:
           KUBE_TOKEN: ${{ secrets.KUBE_TOKEN_PROD }}
         run: |
           docker run --rm \
+            --entrypoint /bin/sh \
             -v "$PWD":/workspace \
             -w /workspace \
             -e APP_NAME \
@@ -147,4 +149,4 @@ jobs:
             -e KUBE_SERVER \
             -e KUBE_TOKEN \
             "$KD_IMAGE" \
-            sh -c "bin/deploy.sh $PROD_ENV"
+            -c "bin/deploy.sh $PROD_ENV"
