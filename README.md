@@ -199,6 +199,8 @@ yarn lint:fix
 ### Notes
 
 - `PROD` promotion verifies the SHA is on `main` and has a successful `Build and Push ECR Image` run from a `push` event.
+- Helm is not required for these workflows. Deployment steps use `kd` (which applies Kubernetes manifests).
+- If you need to pin a specific `kd` image, set repository variable `KD_IMAGE` (for example `quay.io/ukhomeofficedigital/kd:<tag>`).
 - If a deployment step fails, check workflow logs first (AWS auth, kube auth, and target SHA are the most common failure points).
 
 ## Adding a New Web Chat
