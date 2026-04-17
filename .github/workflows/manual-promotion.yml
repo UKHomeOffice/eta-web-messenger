@@ -1,0 +1,149 @@
+name: Manual Promotion
+
+on:
+  workflow_dispatch:
+    inputs:
+      target:
+        description: Promotion target environment
+        required: true
+        type: choice
+        options:
+          - STG
+          - PROD
+      image_sha:
+        description: Commit SHA/tag to deploy
+        required: true
+        type: string
+
+env:
+  APP_NAME: ukiwc
+  UAT_ENV: sas-web-messengers-uat
+  GIT_REPO: UKHomeOffice/eta-web-messenger
+  HOF_CONFIG: hof-services-config/Ukimmigration-Support-Webchat
+  BRANCH_ENV: sas-web-messengers-branch
+  STG_ENV: sas-web-messengers-stg
+  PROD_ENV: sas-web-messengers-prod
+  READY_FOR_TEST_DELAY: 20s
+  AWS_REGION: eu-west-2
+  ECR_REGISTRY: 340268328991.dkr.ecr.eu-west-2.amazonaws.com
+  ECR_REPOSITORY: so/eta-web-messenger
+
+jobs:
+  sanity_check_build_prod:
+    if: inputs.target == 'PROD'
+    runs-on: ubuntu-22.04
+    permissions:
+      actions: read
+      contents: read
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Ensure SHA is on main
+        run: |
+          git fetch origin main --depth=1
+          git merge-base --is-ancestor "${{ inputs.image_sha }}" origin/main
+
+      - name: Verify successful push build exists for SHA
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          RUN_ID=$(gh api repos/${{ github.repository }}/actions/runs \
+            --jq '.workflow_runs[] | select(.name == "Build and Push ECR Image" and .head_sha == "${{ inputs.image_sha }}" and .event == "push" and .conclusion == "success") | .id' \
+            | head -n 1)
+
+          if [ -z "$RUN_ID" ]; then
+            echo "No successful push run found for Build and Push ECR Image on SHA ${{ inputs.image_sha }}"
+            exit 1
+          fi
+
+          echo "Found successful run id: $RUN_ID"
+
+  deploy_to_stg:
+    if: inputs.target == 'STG'
+    runs-on: ubuntu-22.04
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout application repository
+        uses: actions/checkout@v4
+
+      - name: Checkout hof-services-config repository
+        uses: actions/checkout@v4
+        with:
+          repository: UKHomeOfficeForms/hof-services-config
+          token: ${{ secrets.DRONE_GIT_TOKEN }}
+          path: hof-services-config
+
+      - name: Deploy to STG environment
+        env:
+          DRONE_COMMIT_SHA: ${{ inputs.image_sha }}
+          DRONE_SOURCE_BRANCH: main
+          KUBE_SERVER: ${{ secrets.KUBE_SERVER_PROD }}
+          KUBE_TOKEN: ${{ secrets.KUBE_TOKEN_PROD }}
+        run: |
+          docker run --rm \
+            -v "$PWD":/workspace \
+            -w /workspace \
+            -e APP_NAME \
+            -e UAT_ENV \
+            -e GIT_REPO \
+            -e HOF_CONFIG \
+            -e BRANCH_ENV \
+            -e STG_ENV \
+            -e PROD_ENV \
+            -e READY_FOR_TEST_DELAY \
+            -e ECR_REGISTRY \
+            -e ECR_REPOSITORY \
+            -e DRONE_COMMIT_SHA \
+            -e DRONE_SOURCE_BRANCH \
+            -e KUBE_SERVER \
+            -e KUBE_TOKEN \
+            quay.io/ukhomeofficedigital/kd:v1.14.0 \
+            sh -c "bin/deploy.sh $STG_ENV"
+
+  deploy_to_prod:
+    if: inputs.target == 'PROD'
+    needs: sanity_check_build_prod
+    runs-on: ubuntu-22.04
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout application repository
+        uses: actions/checkout@v4
+
+      - name: Checkout hof-services-config repository
+        uses: actions/checkout@v4
+        with:
+          repository: UKHomeOfficeForms/hof-services-config
+          token: ${{ secrets.DRONE_GIT_TOKEN }}
+          path: hof-services-config
+
+      - name: Deploy to PROD environment
+        env:
+          DRONE_COMMIT_SHA: ${{ inputs.image_sha }}
+          DRONE_SOURCE_BRANCH: main
+          KUBE_SERVER: ${{ secrets.KUBE_SERVER_PROD }}
+          KUBE_TOKEN: ${{ secrets.KUBE_TOKEN_PROD }}
+        run: |
+          docker run --rm \
+            -v "$PWD":/workspace \
+            -w /workspace \
+            -e APP_NAME \
+            -e UAT_ENV \
+            -e GIT_REPO \
+            -e HOF_CONFIG \
+            -e BRANCH_ENV \
+            -e STG_ENV \
+            -e PROD_ENV \
+            -e READY_FOR_TEST_DELAY \
+            -e ECR_REGISTRY \
+            -e ECR_REPOSITORY \
+            -e DRONE_COMMIT_SHA \
+            -e DRONE_SOURCE_BRANCH \
+            -e KUBE_SERVER \
+            -e KUBE_TOKEN \
+            quay.io/ukhomeofficedigital/kd:v1.14.0 \
+            sh -c "bin/deploy.sh $PROD_ENV"

@@ -1,0 +1,259 @@
+name: Build and Push ECR Image
+
+on:
+  push:
+    branches:
+      - main
+      - feature/**
+      - fix/**
+  pull_request:
+    branches:
+      - main
+      - feature/**
+      - fix/**
+
+env:
+  APP_NAME: ukiwc
+  UAT_ENV: sas-web-messengers-uat
+  GIT_REPO: UKHomeOffice/eta-web-messenger
+  HOF_CONFIG: hof-services-config/Ukimmigration-Support-Webchat
+  BRANCH_ENV: sas-web-messengers-branch
+  STG_ENV: sas-web-messengers-stg
+  PROD_ENV: sas-web-messengers-prod
+  READY_FOR_TEST_DELAY: 20s
+  AWS_REGION: eu-west-2
+  ECR_REGISTRY: 340268328991.dkr.ecr.eu-west-2.amazonaws.com
+  ECR_REPOSITORY: so/eta-web-messenger
+
+jobs:
+  lint-and-test:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: yarn
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Lint
+        env:
+          NOTIFY_STUB: true
+        run: yarn lint
+
+      - name: Unit tests
+        env:
+          NOTIFY_STUB: true
+        run: yarn test
+
+  build-image:
+    runs-on: ubuntu-22.04
+    needs: lint-and-test
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build Docker image
+        run: docker build -t $ECR_REPOSITORY:${{ github.sha }} .
+
+  push-ecr:
+    runs-on: ubuntu-22.04
+    needs: build-image
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Build and push image
+        env:
+          REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        run: |
+          docker build -t $REGISTRY/$ECR_REPOSITORY:${{ github.sha }} .
+          docker tag $REGISTRY/$ECR_REPOSITORY:${{ github.sha }} $REGISTRY/$ECR_REPOSITORY:latest
+          docker push $REGISTRY/$ECR_REPOSITORY:${{ github.sha }}
+          docker push $REGISTRY/$ECR_REPOSITORY:latest
+
+  deploy_to_branch:
+    runs-on: ubuntu-22.04
+    needs: push-ecr
+    if: github.event_name == 'pull_request'
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout application repository
+        uses: actions/checkout@v4
+
+      - name: Checkout hof-services-config repository
+        uses: actions/checkout@v4
+        with:
+          repository: UKHomeOfficeForms/hof-services-config
+          token: ${{ secrets.DRONE_GIT_TOKEN }}
+          path: hof-services-config
+
+      - name: Keep only required config
+        run: find hof-services-config/* | grep -v "$HOF_CONFIG" | grep -v 'infrastructure' | xargs rm -rf
+
+      - name: Deploy to branch environment
+        env:
+          DRONE_COMMIT_SHA: ${{ github.sha }}
+          DRONE_SOURCE_BRANCH: ${{ github.head_ref }}
+          KUBE_SERVER: ${{ secrets.KUBE_SERVER_DEV }}
+          KUBE_TOKEN: ${{ secrets.KUBE_TOKEN_DEV }}
+        run: |
+          docker run --rm \
+            -v "$PWD":/workspace \
+            -w /workspace \
+            -e APP_NAME \
+            -e UAT_ENV \
+            -e GIT_REPO \
+            -e HOF_CONFIG \
+            -e BRANCH_ENV \
+            -e STG_ENV \
+            -e PROD_ENV \
+            -e READY_FOR_TEST_DELAY \
+            -e ECR_REGISTRY \
+            -e ECR_REPOSITORY \
+            -e DRONE_COMMIT_SHA \
+            -e DRONE_SOURCE_BRANCH \
+            -e KUBE_SERVER \
+            -e KUBE_TOKEN \
+            quay.io/ukhomeofficedigital/kd:v1.14.0 \
+            sh -c "bin/deploy.sh $BRANCH_ENV"
+
+  deploy_to_uat:
+    runs-on: ubuntu-22.04
+    needs: push-ecr
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout application repository
+        uses: actions/checkout@v4
+
+      - name: Checkout hof-services-config repository
+        uses: actions/checkout@v4
+        with:
+          repository: UKHomeOfficeForms/hof-services-config
+          token: ${{ secrets.DRONE_GIT_TOKEN }}
+          path: hof-services-config
+
+      - name: Keep only required config
+        run: find hof-services-config/* | grep -v "$HOF_CONFIG" | grep -v 'infrastructure' | xargs rm -rf
+
+      - name: Deploy to UAT environment
+        env:
+          DRONE_COMMIT_SHA: ${{ github.sha }}
+          DRONE_SOURCE_BRANCH: ${{ github.ref_name }}
+          KUBE_SERVER: ${{ secrets.KUBE_SERVER_DEV }}
+          KUBE_TOKEN: ${{ secrets.KUBE_TOKEN_DEV }}
+        run: |
+          docker run --rm \
+            -v "$PWD":/workspace \
+            -w /workspace \
+            -e APP_NAME \
+            -e UAT_ENV \
+            -e GIT_REPO \
+            -e HOF_CONFIG \
+            -e BRANCH_ENV \
+            -e STG_ENV \
+            -e PROD_ENV \
+            -e READY_FOR_TEST_DELAY \
+            -e ECR_REGISTRY \
+            -e ECR_REPOSITORY \
+            -e DRONE_COMMIT_SHA \
+            -e DRONE_SOURCE_BRANCH \
+            -e KUBE_SERVER \
+            -e KUBE_TOKEN \
+            quay.io/ukhomeofficedigital/kd:v1.14.0 \
+            sh -c "bin/deploy.sh $UAT_ENV"
+
+  get_pr_branch:
+    runs-on: ubuntu-22.04
+    needs: push-ecr
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    outputs:
+      branch_name: ${{ steps.find_pr_branch.outputs.branch_name }}
+    permissions:
+      contents: read
+      pull-requests: read
+    steps:
+      - name: Find merged pull request branch
+        id: find_pr_branch
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -e
+          PR_BRANCH=$(gh api \
+            repos/${{ github.repository }}/commits/${{ github.sha }}/pulls \
+            -H "Accept: application/vnd.github+json" \
+            --jq '.[0].head.ref // ""')
+
+          if [ -z "$PR_BRANCH" ]; then
+            echo "No merged PR branch found for commit ${{ github.sha }}"
+            echo "branch_name=" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          NORMALIZED_BRANCH=$(echo "$PR_BRANCH" | tr '[:upper:]' '[:lower:]' | tr '/' '-')
+          echo "PR branch: $NORMALIZED_BRANCH"
+          echo "branch_name=$NORMALIZED_BRANCH" >> "$GITHUB_OUTPUT"
+
+  tear_down_branch:
+    runs-on: ubuntu-22.04
+    needs:
+      - deploy_to_uat
+      - get_pr_branch
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main' && needs.get_pr_branch.outputs.branch_name != ''
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout application repository
+        uses: actions/checkout@v4
+
+      - name: Write PR branch file for teardown
+        run: |
+          mkdir -p .dockersock
+          echo "${{ needs.get_pr_branch.outputs.branch_name }}" > .dockersock/branch_name.txt
+
+      - name: Tear down branch environment
+        env:
+          KUBE_SERVER: ${{ secrets.KUBE_SERVER_DEV }}
+          KUBE_TOKEN: ${{ secrets.KUBE_TOKEN_DEV }}
+          DRONE_SOURCE_BRANCH: ${{ needs.get_pr_branch.outputs.branch_name }}
+        run: |
+          docker run --rm \
+            -v "$PWD":/workspace \
+            -v "$PWD/.dockersock":/root/.dockersock \
+            -w /workspace \
+            -e APP_NAME \
+            -e UAT_ENV \
+            -e GIT_REPO \
+            -e HOF_CONFIG \
+            -e BRANCH_ENV \
+            -e STG_ENV \
+            -e PROD_ENV \
+            -e READY_FOR_TEST_DELAY \
+            -e ECR_REGISTRY \
+            -e ECR_REPOSITORY \
+            -e DRONE_SOURCE_BRANCH \
+            -e KUBE_SERVER \
+            -e KUBE_TOKEN \
+            quay.io/ukhomeofficedigital/kd:v1.14.0 \
+            sh -c "bin/deploy.sh tear_down"
