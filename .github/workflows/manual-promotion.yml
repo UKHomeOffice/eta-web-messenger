@@ -64,7 +64,7 @@ jobs:
 
   deploy_to_stg:
     if: inputs.target == 'STG'
-    runs-on: ubuntu-22.04
+    runs-on: self-hosted
     permissions:
       contents: read
     steps:
@@ -109,7 +109,7 @@ jobs:
   deploy_to_prod:
     if: inputs.target == 'PROD'
     needs: sanity_check_build_prod
-    runs-on: ubuntu-22.04
+    runs-on: self-hosted
     permissions:
       contents: read
     steps:

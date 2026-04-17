@@ -92,7 +92,7 @@ jobs:
           docker push $REGISTRY/$ECR_REPOSITORY:latest
 
   deploy_to_branch:
-    runs-on: ubuntu-22.04
+    runs-on: self-hosted
     needs: push-ecr
     if: github.event_name == 'pull_request'
     permissions:
@@ -140,7 +140,7 @@ jobs:
             -c "bin/deploy.sh $BRANCH_ENV"
 
   deploy_to_uat:
-    runs-on: ubuntu-22.04
+    runs-on: self-hosted
     needs: push-ecr
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     permissions:
@@ -219,7 +219,7 @@ jobs:
           echo "branch_name=$NORMALIZED_BRANCH" >> "$GITHUB_OUTPUT"
 
   tear_down_branch:
-    runs-on: ubuntu-22.04
+    runs-on: self-hosted
     needs:
       - deploy_to_uat
       - get_pr_branch
