@@ -24,6 +24,7 @@ env:
   STG_ENV: sas-web-messengers-stg
   PROD_ENV: sas-web-messengers-prod
   READY_FOR_TEST_DELAY: 20s
+  KD_IMAGE: ${{ vars.KD_IMAGE || 'quay.io/ukhomeofficedigital/kd:v1.34.1' }}
   AWS_REGION: eu-west-2
   ECR_REGISTRY: 340268328991.dkr.ecr.eu-west-2.amazonaws.com
   ECR_REPOSITORY: so/eta-web-messenger
@@ -101,7 +102,7 @@ jobs:
             -e DRONE_SOURCE_BRANCH \
             -e KUBE_SERVER \
             -e KUBE_TOKEN \
-            quay.io/ukhomeofficedigital/kd:v1.14.0 \
+            "$KD_IMAGE" \
             sh -c "bin/deploy.sh $STG_ENV"
 
   deploy_to_prod:
@@ -145,5 +146,5 @@ jobs:
             -e DRONE_SOURCE_BRANCH \
             -e KUBE_SERVER \
             -e KUBE_TOKEN \
-            quay.io/ukhomeofficedigital/kd:v1.14.0 \
+            "$KD_IMAGE" \
             sh -c "bin/deploy.sh $PROD_ENV"
