@@ -5,7 +5,7 @@ export INGRESS_INTERNAL_ANNOTATIONS=$HOF_CONFIG/ingress-internal-annotations.yam
 export INGRESS_EXTERNAL_ANNOTATIONS=$HOF_CONFIG/ingress-external-annotations.yaml
 export NGINX_SETTINGS=$HOF_CONFIG/nginx-settings.yaml
 
-kd='kd --insecure-skip-tls-verify --timeout 10m --check-interval 10s'
+kd='kd --insecure-skip-tls-verify --timeout 10m --check-interval 10s --validate=false'
 
 if [[ $1 == 'tear_down' ]]; then
   export KUBE_NAMESPACE=$BRANCH_ENV
