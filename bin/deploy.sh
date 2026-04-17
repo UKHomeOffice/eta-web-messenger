@@ -5,7 +5,23 @@ export INGRESS_INTERNAL_ANNOTATIONS=$HOF_CONFIG/ingress-internal-annotations.yam
 export INGRESS_EXTERNAL_ANNOTATIONS=$HOF_CONFIG/ingress-external-annotations.yaml
 export NGINX_SETTINGS=$HOF_CONFIG/nginx-settings.yaml
 
-kd='kd --insecure-skip-tls-verify --timeout 10m --check-interval 10s --validate=false'
+cat >/tmp/kubectl-no-validate <<'EOF'
+#!/bin/sh
+command="$1"
+shift
+
+case "$command" in
+  apply|create|replace)
+    exec kubectl "$command" --validate=false "$@"
+    ;;
+  *)
+    exec kubectl "$command" "$@"
+    ;;
+esac
+EOF
+chmod +x /tmp/kubectl-no-validate
+
+kd='kd --insecure-skip-tls-verify --timeout 10m --check-interval 10s --kubectl-binary /tmp/kubectl-no-validate'
 
 if [[ $1 == 'tear_down' ]]; then
   export KUBE_NAMESPACE=$BRANCH_ENV
