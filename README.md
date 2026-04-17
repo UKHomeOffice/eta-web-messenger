@@ -6,6 +6,7 @@
 * [Technical Overview](./docs/technical-overview.md)
 * [Genesys Integration](./docs/genesys-overview.md)
 * [Developer Guide](./docs/dev.md)
+* [Deployment Runbook (GitHub Actions)](#deployment-runbook-github-actions)
 * [Adding a New Web Chat](#adding-a-new-web-chat)
 * [Contributing](#contributing)
 
@@ -170,6 +171,37 @@ yarn lint:fix
 
 - Forgot `env.json` — app won't start. Ensure `env.json` is served at `/env.json` before the app's JS runs.
 - Port collisions — dev server runs on 3000 by default. Production nginx listens on 80 inside the container and is mapped to the host port you choose.
+
+## Deployment Runbook (GitHub Actions)
+
+### Workflows
+
+- `.github/workflows/build-and-push-ecr.yml`
+  - Runs on `push` and `pull_request` for `main`, `feature/**`, and `fix/**`.
+  - Builds/tests, pushes image to ECR, deploys PR branches, deploys `main` to UAT, then tears down merged PR branch environments.
+
+- `.github/workflows/manual-promotion.yml`
+  - Runs only when manually triggered (`workflow_dispatch`).
+  - Promotes a selected image SHA to `STG` or `PROD`.
+  - Includes a PROD sanity gate before deployment.
+
+
+### Manual promotion steps (STG/PROD)
+
+1. Open `Actions` in GitHub.
+2. Select `Manual Promotion`.
+3. Click `Run workflow`.
+4. Enter:
+   - `target`: `STG` or `PROD`
+   - `image_sha`: commit SHA to deploy (must be an image/tag already available in ECR)
+5. Run and monitor job logs.
+
+### Notes
+
+- `PROD` promotion verifies the SHA is on `main` and has a successful `Build and Push ECR Image` run from a `push` event.
+- Helm is not required for these workflows. Deployment steps use `kd` (which applies Kubernetes manifests).
+- If you need to pin a specific `kd` image, set repository variable `KD_IMAGE` (for example `quay.io/ukhomeofficedigital/kd:<tag>`).
+- If a deployment step fails, check workflow logs first (AWS auth, kube auth, and target SHA are the most common failure points).
 
 ## Adding a New Web Chat
  
