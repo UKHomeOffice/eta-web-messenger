@@ -7,17 +7,21 @@ export NGINX_SETTINGS=$HOF_CONFIG/nginx-settings.yaml
 
 cat >/tmp/kubectl-no-validate <<'EOF'
 #!/bin/sh
-command="$1"
-shift
+needs_validate=false
 
-case "$command" in
-  apply|create|replace)
-    exec kubectl "$command" --validate=false "$@"
-    ;;
-  *)
-    exec kubectl "$command" "$@"
-    ;;
-esac
+for arg in "$@"; do
+  case "$arg" in
+    apply|create|replace)
+      needs_validate=true
+      ;;
+  esac
+done
+
+if [ "$needs_validate" = true ]; then
+  exec kubectl "$@" --validate=false
+fi
+
+exec kubectl "$@"
 EOF
 chmod +x /tmp/kubectl-no-validate
 
