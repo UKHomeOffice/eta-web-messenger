@@ -104,13 +104,11 @@ describe('CookieBanner', () => {
     renderWithProvider(<CookieBanner />);
 
     await userEvent.click(screen.getByText(/Accept analytics cookies/i));
-    
-    const acceptance = screen.getByTestId('cookies-acceptance-message');
-    
-    expect(acceptance).toBeInTheDocument();
-    
-    // Simulate hideCookieMessage    
-    await userEvent.click(acceptance);
-    // Since our mock doesn't handle the click, this is just a placeholder for real interaction
+
+    expect(screen.getByTestId('cookies-acceptance-message')).toBeInTheDocument();
+
+    await userEvent.click(screen.getByRole('button', { name: /Hide this message/i }));
+
+    expect(screen.queryByTestId('cookies-acceptance-message')).not.toBeInTheDocument();
   });
 });

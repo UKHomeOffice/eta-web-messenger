@@ -1,4 +1,4 @@
-import config from '../../../config';
+import config from '../../config';
 const logApiEndpoint = config.logApiEndpoint;
 
 /**
@@ -17,7 +17,7 @@ export default async function logData({ level, message, metadata }) {
 
 export async function logToService(level, message, metadata) {
 
-  const service = `${config.service.name} Web Messenger`;
+  const service = `${config.service.name}`;
 
   const payload = {
     timestamp: new Date().toISOString(),

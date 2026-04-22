@@ -1,4 +1,3 @@
-.parcel-cache/
 dist/
 node_modules/
 coverage/
@@ -17,5 +16,4 @@ apps/**/translations/**/*
 !apps/**/translations/src/
 !apps/**/translations/src/**/*
 test/_accessibility/tmp/*
-.devcontainer/*.env
-/assets/env.json
+/public/env.json

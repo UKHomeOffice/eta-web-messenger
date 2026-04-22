@@ -1,105 +1,112 @@
-jest.mock('../../src/genesys/genesys-service.js', () => ({
-  loadGenesysScript: jest.fn(),
-  subscribeAgentTyping: jest.fn(),
-  unSubscribeAgentTyping: jest.fn(),
-  initialiseGenesysConversation: jest.fn(),
-  subscribeToGenesysMessages: jest.fn(),
-  subscribeToGenesysOldMessages: jest.fn(),
-  subscribeToSessionRestored: jest.fn(),
-  subscribeToGenesysOffline: jest.fn(),
-  subscribeToGenesysReconnected: jest.fn(),
-  subscribeToErrors: jest.fn(),
+import '@testing-library/jest-dom';
+import { act, render, screen } from '@testing-library/react';
+import { MemoryRouter, useNavigate } from 'react-router';
+import Eta from '../../src/routes/index';
+import config from '../../config';
+import logData from '../../src/utils/logging';
+
+let mockGenesysProps;
+
+jest.mock('react-router', () => {
+  const actual = jest.requireActual('react-router');
+  return {
+    ...actual,
+    useNavigate: jest.fn()
+  };
+});
+
+jest.mock('hof-genesys-chat-component', () => ({
+  GenesysChatComponent: (props) => {
+    mockGenesysProps = props;
+    return <div data-testid="genesys-chat-component">Genesys chat component</div>;
+  }
 }));
 
-import '@testing-library/jest-dom';
-import { render, screen } from '@testing-library/react';
-import { MemoryRouter } from 'react-router';
-import Eta from '../../src/routes/index';
-import {
-  initialiseGenesysConversation,
-  subscribeToErrors,
-  subscribeToGenesysMessages
-} from '../../src/genesys/genesys-service.js';
-import { ErrorBoundary } from '../../src/error/error-boundary.js';
+jest.mock('@hods/loading-spinner', () => () => <div data-testid="loading-spinner">Loading spinner</div>);
+
+jest.mock('../../src/components/content/page-heading', () => ({
+  __esModule: true,
+  default: ({ serviceName, serviceSubText }) => (
+    <h1>{`Home Office ${serviceName} Chat ${serviceSubText}`}</h1>
+  )
+}));
+
+jest.mock('../../src/components/error/error-component', () => ({
+  __esModule: true,
+  default: ({ contactFormLink }) => (
+    <div>
+      <h1>Something went wrong</h1>
+      <a data-testid="error-contact-form" href={contactFormLink}>Contact form</a>
+    </div>
+  )
+}));
+
+jest.mock('../../src/utils/logging', () => ({
+  __esModule: true,
+  default: jest.fn()
+}));
 
 const renderComponentWithRouter = (component) => render(
   <MemoryRouter>
-    <ErrorBoundary>
-      {component}
-    </ErrorBoundary>
+    {component}
   </MemoryRouter>
 );
 
 describe('Eta page', () => {
+  const mockNavigate = jest.fn();
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+    mockGenesysProps = undefined;
+    useNavigate.mockReturnValue(mockNavigate);
+  });
+
   test('renders ETA page with correct content', () => {
     renderComponentWithRouter(<Eta />);
 
-    const headings = screen.getAllByRole('heading');
-    expect(headings[0]).toHaveTextContent('Home Office ETA Chat');
-    expect(headings[1]).toHaveTextContent('Loading web chat');
-
-    const subText = screen.getByText(/Ask our/i);
-    expect(subText).toHaveTextContent('Ask our digital assistant about an ETA');
+    const heading = screen.getByRole('heading');
+    expect(heading).toHaveTextContent('Home Office ETA Chat');
+    expect(heading).toHaveTextContent(config.service.name);
+    expect(screen.getByTestId('genesys-chat-component')).toBeInTheDocument();
   });
 
-  test('renders ETA specific error content when application error occurs due to unexpected Genesys content', async () => {
-    // Mock the Genesys window object 
-    window.Genesys = {};
-
-    initialiseGenesysConversation.mockImplementation((onGenesysReady) => {
-      onGenesysReady();
-    });
-
-    // Simulate receiving a bad message from the Genesys (direction case sensitivity)
-    subscribeToGenesysMessages.mockImplementation((onMessage) => {
-      onMessage([{
-        'Direction': 'Outbound',
-        'text': 'Welcome to ETA webchat, in few word how can i help you today?',
-        'type': 'Text',
-        'channel': {
-          'time': '2025-07-31T09:38:00Z'
-        },
-        'metadata': {
-          'correlationId': '00000000-0000-0000-0000-000000000000'
-        },
-        'originatingEntity': 'Bot',
-        'content': []
-      }]);
-    });
-
+  test('passes required props to GenesysChatComponent', () => {
     renderComponentWithRouter(<Eta />);
 
-    const headings = screen.getAllByRole('heading');
-    expect(headings).toHaveLength(1);
-    expect(headings[0]).toHaveTextContent('Something went wrong');
-
-    const errorMessage = screen.getByText(/Please try again in a/i);
-    expect(errorMessage).toBeInTheDocument();
-    expect(errorMessage).toHaveTextContent('Please try again in a few minutes or use our contact form. We will reply in 3 to 5 working days.');
-    expect(errorMessage.querySelector('a')).toHaveAttribute('href', 'https://www.ask-question-about-electronic-travel-authorisation.homeoffice.gov.uk');
+    expect(mockGenesysProps).toEqual(expect.objectContaining({
+      genesysEnvironment: config.service.environment,
+      deploymentId: config.service.deploymentId,
+      loggingCallback: logData,
+      serviceMetadata: expect.objectContaining({
+        serviceName: config.service.name,
+        agentConnectedText: config.bannerTypeDisplay.human,
+        agentDisconnectedText: config.bannerTypeDisplay.agentDisconnected,
+        offlineText: config.bannerTypeDisplay.offline,
+        onlineText: config.bannerTypeDisplay.online,
+        botMetaDisplay: config.botMetaDisplay,
+      })
+    }));
+    expect(mockGenesysProps.loadingSpinner).toBeTruthy();
   });
 
-  test('renders ETA specific error content when Genesys error occurs', async () => {
-    // Mock the Genesys window object 
-    window.Genesys = {};
-
-    initialiseGenesysConversation.mockImplementation((onGenesysReady) => {
-      onGenesysReady();
-    });
-
-    subscribeToErrors.mockImplementation((onError) => {
-      onError();
-    });
-
+  test('renders ETA error content when error callback occurs', async () => {
     renderComponentWithRouter(<Eta />);
 
-    const headings = screen.getAllByRole('heading');
-    expect(headings).toHaveLength(1);
-    expect(headings[0]).toHaveTextContent('Something went wrong');
+    await act(async () => {
+      mockGenesysProps.errorCallback();
+    });
 
-    const errorMessage = screen.getByText(/Please try again in a/i);
-    expect(errorMessage).toBeInTheDocument();
-    expect(errorMessage).toHaveTextContent('Please try again in a few minutes or use our contact form. We will reply in 3 to 5 working days.');
-    expect(errorMessage.querySelector('a')).toHaveAttribute('href', 'https://www.ask-question-about-electronic-travel-authorisation.homeoffice.gov.uk');
+    expect(screen.getByRole('heading')).toHaveTextContent('Something went wrong');
+    expect(screen.getByTestId('error-contact-form')).toHaveAttribute('href', config.service.errorContactLink);
+  });
+
+  test('navigates to end chat confirmation when chat ends', async () => {
+    renderComponentWithRouter(<Eta />);
+
+    await act(async () => {
+      mockGenesysProps.onChatEnded();
+    });
+
+    expect(mockNavigate).toHaveBeenCalledWith('/end-chat-confirmation');
   });
 });

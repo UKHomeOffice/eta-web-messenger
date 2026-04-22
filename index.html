@@ -5,11 +5,11 @@
   <meta name="robots" content="noindex, nofollow" />
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="icon" href="/assets/images/favicon.ico" type="image/x-icon" />
+  <link rel="icon" href="/favicon.ico" type="image/x-icon" />
   <noscript>
-    <link rel="stylesheet" href="/styles/govuk-frontend-5.11.2.min.css" />
+    <link rel="stylesheet" href="/assets/styles/govuk-frontend-5.11.2.min.css" />
   </noscript>
-  <title>Web Messenger</title>
+  <title>ETA Web Messenger</title>
 </head>
 
 <!-- Margin 0 needs to be added here for the no javascript fallback, otherwise the standard body style from govuk isn't applied correctly -->
@@ -57,17 +57,9 @@
         </div>
         <h1 class="govuk-heading-l">JavaScript is turned off in your browser</h1>
         <p class="govuk-body">Turn JavaScript back on to use the digital assistant.<br /><br />
-          If you can't do this, you can use one of our contact forms instead. We will reply in 3 to 5 working
-          days.<br /><br />
-          Choose the right form for your question:<br />
+          If you can't do this, you can use our <a class="govuk-link govuk-link--no-visited-state"
+          href="https://www.ask-question-about-electronic-travel-authorisation.homeoffice.gov.uk">contact form</a> instead.
         </p>
-        <ul class="govuk-list govuk-list--bullet">
-          <li>
-            Electronic Travel Authorisation (ETA): <a class="govuk-link govuk-link--no-visited-state"
-              href="https://www.ask-question-about-electronic-travel-authorisation.homeoffice.gov.uk">Use the ETA
-              contact form</a>
-          </li>
-        </ul>
       </div>
     </div>
     <footer class="govuk-footer " role="contentinfo">
@@ -114,7 +106,7 @@
     </footer>
   </noscript>
   <div id="app"></div>
-  <script type="module" src="index.js"></script>
+  <script type="module" src="/src/index.jsx"></script>
 </body>
 
 </html>

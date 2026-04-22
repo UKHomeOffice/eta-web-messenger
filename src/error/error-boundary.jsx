@@ -1,6 +1,6 @@
 import React from 'react';
 import ErrorComponent from '../components/error/error-component';
-import logData from '../components/utils/logging';
+import logData from '../utils/logging';
 import config from '../../config';
 
 /**

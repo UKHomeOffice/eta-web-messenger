@@ -1,10 +1,10 @@
 import { Routes, Route } from 'react-router';
-import Eta from './routes/index';
 import ViewCookies from './components/cookies/view-cookies';
 import AccessibilityStatement from './components/accessibility/statement';
 import NotFound from './routes/not-found';
 import EndChatConfirmation from './components/chat/end-chat-confirmation';
 import { ErrorBoundary } from './error/error-boundary';
+import Eta from './routes/index';
 
 export function App() {
 

@@ -1,6 +1,6 @@
 import '@testing-library/jest-dom';
 import { render } from '@testing-library/react';
-import PhaseBanner from '../../../../src/components/layout/banner/phase-banner';
+import PhaseBanner from '../../../../../src/components/layout/banner/phase-banner';
 
 const { axe, toHaveNoViolations } = require('jest-axe');
 expect.extend(toHaveNoViolations);
