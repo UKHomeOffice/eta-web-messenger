@@ -27,7 +27,10 @@ jest.mock('@hods/loading-spinner', () => () => <div data-testid="loading-spinner
 jest.mock('../../src/components/content/page-heading', () => ({
   __esModule: true,
   default: ({ serviceName, serviceSubText }) => (
-    <h1>{`Home Office ${serviceName} Chat ${serviceSubText}`}</h1>
+    <div>
+      <h1>{`Home Office ${serviceName} Chat`}</h1>
+      <p>{`Ask our digital assistant about ${serviceSubText}`}</p>
+    </div> 
   )
 }));
 
