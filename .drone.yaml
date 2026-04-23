@@ -15,7 +15,7 @@ environment:
   BRANCH_ENV: sas-web-messengers-branch
   STG_ENV: sas-web-messengers-stg
   PROD_ENV: sas-web-messengers-prod
-  PRODUCTION_URL: ukimmigration-support-webchat.homeoffice.gov.uk
+  PRODUCTION_URL: ukvi-eta-support-webchat.homeoffice.gov.uk
   IMAGE_URL: 340268328991.dkr.ecr.eu-west-2.amazonaws.com
   IMAGE_REPO: so/eta-web-messenger
   NON_PROD_AVAILABILITY: Mon-Fri 00:00-23:59 Europe/London
