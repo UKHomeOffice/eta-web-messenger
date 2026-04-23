@@ -8,8 +8,6 @@
 @use 'end-chat-modal';
 @use 'media-query';
 
-$govuk-assets-path: '/assets/';
-
 @import "govuk-frontend/dist/govuk/index";
 @import '@hods/sass-base';
 

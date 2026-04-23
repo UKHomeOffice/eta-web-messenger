@@ -5,7 +5,6 @@ Dockerfile
 .git
 .gitignore
 .env
-.parcel-cache
 .dist
 dist
 build

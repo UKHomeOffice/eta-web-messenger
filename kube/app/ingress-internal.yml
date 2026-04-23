@@ -13,7 +13,7 @@ spec:
     - hosts:
       {{ if eq .KUBE_NAMESPACE .BRANCH_ENV }}
         - {{ .DRONE_BUILD_NUMBER }}.internal.branch.sas-notprod.homeoffice.gov.uk
-        - web-messengers-{{ .DRONE_SOURCE_BRANCH }}.internal.branch.sas-notprod.homeoffice.gov.uk
+        - eta-web-messenger-{{ .DRONE_SOURCE_BRANCH }}.internal.branch.sas-notprod.homeoffice.gov.uk
       {{ else if eq .KUBE_NAMESPACE .UAT_ENV }}
         - {{ .APP_NAME }}.uat.internal.sas-notprod.homeoffice.gov.uk
         - {{ .APP_NAME }}.internal.uat.sas-notprod.homeoffice.gov.uk
@@ -27,7 +27,7 @@ spec:
       {{ end }}
   rules:
       {{ if eq .KUBE_NAMESPACE .BRANCH_ENV }}
-    - host: web-messengers-{{ .DRONE_SOURCE_BRANCH }}.internal.branch.sas-notprod.homeoffice.gov.uk
+    - host: eta-web-messenger-{{ .DRONE_SOURCE_BRANCH }}.internal.branch.sas-notprod.homeoffice.gov.uk
       {{ else if eq .KUBE_NAMESPACE .UAT_ENV }}
     - host: {{ .APP_NAME }}.internal.uat.sas-notprod.homeoffice.gov.uk
       {{ else if eq .KUBE_NAMESPACE .STG_ENV }}

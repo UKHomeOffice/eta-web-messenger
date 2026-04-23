@@ -8,7 +8,7 @@ platform:
   arch: amd64
 
 environment:
-  APP_NAME: ukiwc
+  APP_NAME: ukvi-eta
   UAT_ENV: sas-web-messengers-uat
   GIT_REPO: UKHomeOffice/eta-web-messenger
   HOF_CONFIG: hof-services-config/Ukimmigration-Support-Webchat
@@ -20,7 +20,6 @@ environment:
   IMAGE_REPO: so/eta-web-messenger
   NON_PROD_AVAILABILITY: Mon-Fri 00:00-23:59 Europe/London
   READY_FOR_TEST_DELAY: 20s
-  NOTIFY_STUB: stub
 
 include_default_branch: &include_default_branch
   include:
@@ -38,21 +37,17 @@ trigger:
 
 node_image: &node_image
   pull: if-not-exists
-  image: quay.io/ukhomeofficedigital/hof-nodejs:20.19.0-alpine3.21-v2@sha256:ab9686c7cf77bab94ab32c1c0e262b2a5242c2cbff61b0bbb3f62610b4f2e706
+  image: quay.io/ukhomeofficedigital/hof-nodejs:20.20.2-alpine3.23@sha256:bcd17b68a0f1910f1670b07f6a47d1e2c28291bafc219807c494dc62b57ea25e
 
 lint: &lint
   pull: if-not-exists
-  image: node:20.19.0
-  environment:
-    NOTIFY_KEY: USE_MOCK
+  image: quay.io/ukhomeofficedigital/hof-nodejs:20.20.2-alpine3.23@sha256:bcd17b68a0f1910f1670b07f6a47d1e2c28291bafc219807c494dc62b57ea25e
   commands:
     - yarn lint:ci
 
 unit_tests: &unit_tests
   pull: if-not-exists
-  image: node:20.19.0
-  environment:
-    NOTIFY_KEY: USE_MOCK
+  image: quay.io/ukhomeofficedigital/hof-nodejs:20.20.2-alpine3.23@sha256:bcd17b68a0f1910f1670b07f6a47d1e2c28291bafc219807c494dc62b57ea25e
   commands:
     - yarn run test:unit
 
@@ -85,7 +80,7 @@ steps:
         cpu: 1000
         memory: 1024Mi
     environment:
-      IMAGE_NAME: quay.io/ukhomeofficedigital/hof-nodejs:20.19.0-alpine3.21-v2@sha256:ab9686c7cf77bab94ab32c1c0e262b2a5242c2cbff61b0bbb3f62610b4f2e706
+      IMAGE_NAME: quay.io/ukhomeofficedigital/hof-nodejs:20.20.2-alpine3.23@sha256:bcd17b68a0f1910f1670b07f6a47d1e2c28291bafc219807c494dc62b57ea25e
       SERVICE_URL: https://acp-trivy-helm.acp-trivy.svc.cluster.local:443
       SEVERITY: MEDIUM,HIGH,CRITICAL  --dependency-tree
       FAIL_ON_DETECTION: false
@@ -97,8 +92,6 @@ steps:
       event: [push, pull_request]
   - name: lint
     <<: *node_image
-    environment:
-      NOTIFY_STUB: true
     commands:
       - yarn install --frozen-lockfile
       - yarn lint
@@ -108,8 +101,6 @@ steps:
       event: [push, pull_request]
   - name: unit_tests
     <<: *node_image
-    environment:
-      NOTIFY_STUB: true
     commands:
       - yarn install --frozen-lockfile
       - yarn test
@@ -186,7 +177,6 @@ steps:
     pull: if-not-exists
     image: quay.io/ukhomeofficedigital/kd:v1.14.0
     environment:
-      # NOTIFY_STUB: stub
       KUBE_SERVER:
         from_secret: KUBE_SERVER_DEV
       KUBE_TOKEN:
@@ -364,7 +354,7 @@ steps:
     image: 340268328991.dkr.ecr.eu-west-2.amazonaws.com/acp/trivy/client:latest
     pull: always
     environment:
-      IMAGE_NAME: quay.io/ukhomeofficedigital/hof-nodejs:20.19.0-alpine3.21-v2@sha256:ab9686c7cf77bab94ab32c1c0e262b2a5242c2cbff61b0bbb3f62610b4f2e706
+      IMAGE_NAME: quay.io/ukhomeofficedigital/hof-nodejs:20.20.2-alpine3.23@sha256:bcd17b68a0f1910f1670b07f6a47d1e2c28291bafc219807c494dc62b57ea25e
       SEVERITY: UNKNOWN,LOW,MEDIUM,HIGH,CRITICAL --dependency-tree
       FAIL_ON_DETECTION: true
       IGNORE_UNFIXED: false

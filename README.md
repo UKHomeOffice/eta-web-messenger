@@ -1,4 +1,4 @@
-# Web Messengers
+# ETA Web Messenger
 
 * [Introduction](#introduction)
 * [Service Architecture](#service-architecture)
@@ -12,12 +12,9 @@
 
 ## Introduction 
 
-Home Office service for web messengers. This service provides 3 web messenger, chat bot style services for public use. The 3 services included in this application are:
+Home Office service for ETA web messenger. This service provides a chat bot style services for public use.
 
-- ETA (Electronic Travel Authorisation)
-
-
-Each messenger integrates with [Genesys Web Messenger](https://help.mypurecloud.com/articles/web-messaging-overview/), which provides automated bot interactions based on specific knowledge bases for each service, whilst also providing human interaction and support through live agents.
+The messenger uses the core [hof-genesys-chat-component](https://www.npmjs.com/package/hof-genesys-chat-component).
 
 The application is hosted within the ACP platform, deployed onto Kubernetes infrastructure.
 
@@ -37,13 +34,9 @@ The application is hosted within the ACP platform, deployed onto Kubernetes infr
 
 See the [technical overview](./docs/technical-overview.md)
 
-## Genesys Integration
-
-See the [genesys overview](./docs/genesys-overview.md) for details on how the service integrates with Genesys Cloud Platform.
-
 ## Developer Guide
 
-This guide shows how to run `web-messengers` locally for development, how to provide runtime environment values, and how to run the built image locally so you can test behaviour that's close to production.
+This guide shows how to run `visa-web-messenger` locally for development, how to provide runtime environment values, and how to run the built image locally so you can test behaviour that's close to production.
 
 ### Prerequisites
 
@@ -67,9 +60,9 @@ Example `env.json`:
 }
 ```
 
-> Note: Non-prod values can be found in Keybase (`WM-env.json`), a senior developer on the team can help you to find this if you're unfamiliar with Keybase.
+> Note: Non-prod values can be found in Keybase (`eta-wm-env.json`), a senior developer on the team can help you to find this if you're unfamiliar with Keybase.
 
-### Run in development mode (Parcel)
+### Run in development mode (Vite)
 
 1. Install dependencies:
 
@@ -77,12 +70,12 @@ Example `env.json`:
 yarn install
 ```
 
-2. Ensure `env.json` exists at the project root (see above). Parcel will serve files from project root so the client can fetch `/env.json`.
+2. Ensure `env.json` exists at the project root (see above). Vite will serve files from project root so the client can fetch `/env.json`.
 
 3. Start the dev server:
 
 ```bash
-yarn start
+yarn dev
 # opens on http://localhost:3000
 ```
 
@@ -98,7 +91,7 @@ If you want to build and serve the static files like production (so `generate-en
 1. Build the production artifact:
 
 ```bash
-yarn build-prod
+yarn build
 # outputs to ./dist
 ```
 
@@ -111,12 +104,12 @@ cp env.json dist/env.json
 3. Serve `dist/` with a simple static server (you can use `npx serve` or python):
 
 ```bash
-npx serve -s dist -l 8080
+npx serve -s dist -l 8000
 # or
-python3 -m http.server --directory dist 8080
+python3 -m http.server --directory dist 8000
 ```
 
-Then open `http://localhost:8080` to verify the built app loads and reads `env.json`.
+Then open `http://localhost:8000` to verify the built app loads and reads `env.json`.
 
 ### Run the Docker image locally (test runtime env injection)
 
@@ -125,7 +118,7 @@ This lets you exercise `generate-env.sh` which writes `env.json` from env vars a
 1. Build the image (from project root):
 
 ```bash
-docker build -t web-messengers:local .
+docker build -t eta-web-messenger:local .
 ```
 
 2. Create a `.env` file with keys required by `generate-env.sh` (or pass env vars directly to `docker run`). Example `.env`:
@@ -138,12 +131,12 @@ ENABLE_ANALYTICS=false
 LOG_ENDPOINT=REPLACE_ME
 ```
 
-> NOTE: the file doesn't have to be named `.env` it's just to pass the environment variables to the docker environment. Again the non-prod values can be found in keybase (`WM-env.json`).
+> NOTE: the file doesn't have to be named `.env` it's just to pass the environment variables to the docker environment. Again the non-prod values can be found in keybase (`eta-wm-env.json`).
 
 3. Run the container with the env file and port mapping:
 
 ```bash
-docker run --rm --env-file .env -p 8080:80 web-messengers:local
+docker run --rm --env-file .env -p 8000:80 eta-web-messenger:local
 ```
 
 ### Tests and linting
@@ -164,46 +157,12 @@ yarn lint:fix
 ### Debugging tips
 
 - env.json fetch failures: open the browser devtools Network tab and check the `/env.json` request and response. If it returns 404 or 500 the app will throw and not mount.
-- Parcel (dev): source maps are enabled by default — use the browser devtools to set breakpoints in app sources.
+- Vite (dev): source maps are enabled by default — use the browser devtools to set breakpoints in app sources.
 
 ### Common issues
 
 - Forgot `env.json` — app won't start. Ensure `env.json` is served at `/env.json` before the app's JS runs.
 - Port collisions — dev server runs on 3000 by default. Production nginx listens on 80 inside the container and is mapped to the host port you choose.
-
-## Adding a New Web Chat
- 
-The service has been built in a modular way. As the 3 embedded services all follow the exact same pattern, there is a single [core chat component](./src/components/genesys-chat-component.js) which handles the core chat capability. Each service which uses this component just needs to import it and pass the required props to work. 
-
-In order to add a new chat service, the follow key elements will need to be implemented:
-
-> Assumption here is that a new Genesys deployment would have been configured and deployed for this new service
-
-* A new config entry would need adding to the [service config file](./config.js) to reflect the new chat settings
-* The [env.json](./env.json) file would need an entry adding for the new Genesys deploymentId
-* The [kube deployment manifest](./kube/app/deployment.yml) would need updating to add the new Genesys deploymentId as a secret env value
-* A new route needs to be added to `src/routes`. Within that new route component, simple follow the same pattern as the other routes to enable a new chat service inside the application:
-
-```
-export default function NewWebChatComponent() {
-  return (
-    <ErrorBoundary>
-      <GenesysChatComponent
-        deploymentId={config.newChatComponent.deploymentId}
-        localStorageKey={config.newChatComponent.localStorageKey}
-        serviceName={config.newChatComponent.name}
-        serviceSubText={config.newChatComponent.subText}
-        errorContactLink={config.newChatComponent.errorContactLink}
-      />
-    </ErrorBoundary>
-  );
-}
-```
-* A new route would need adding to the [App.js](./src/App.js) file so the service is reachable
-* New routes would need adding to support the cookie pages for the new service
-* New Google Analytics UTM parameters would need assigning to the new service (and added as config to the [config file](./config.js))
-
-> Note: This service has been primarily built as a re-skin project to replace an existing service which hosts the 3 web messeger applications. The view isn't to add more web messenger services to this project. However, this section provides the detail on how to do so, if that requirement was considered.
 
 ## Contributing
 

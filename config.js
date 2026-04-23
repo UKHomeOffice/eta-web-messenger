@@ -1,6 +1,6 @@
-const { getEnvValueByKey } = require('./src/env-bootstrap');
+import { getEnvValueByKey } from './src/env-bootstrap';
 
-module.exports = {
+export default {
   bannerTypeDisplay: {
     bot: 'You are speaking with a digital assistant',
     human: 'You are now talking to a live agent',
@@ -15,7 +15,7 @@ module.exports = {
   maxCharacterLimit: 4096,
   service: {
     deploymentId: getEnvValueByKey('ETA_DEPLOYMENT_ID'),
-    localStorageKey: 'eta-genesys-session',
+    environment: getEnvValueByKey('GENESYS_ENVIRONMENT'),
     name: 'ETA',
     subText: 'an ETA (electronic travel authorisation).',
     cookiePolicy: 'eta_cookie_policy',

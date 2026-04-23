@@ -1,4 +1,4 @@
-FROM quay.io/ukhomeofficedigital/hof-nodejs:20.19.0-alpine3.21-v2@sha256:ab9686c7cf77bab94ab32c1c0e262b2a5242c2cbff61b0bbb3f62610b4f2e706 AS builder
+FROM quay.io/ukhomeofficedigital/hof-nodejs:20.20.2-alpine3.23@sha256:bcd17b68a0f1910f1670b07f6a47d1e2c28291bafc219807c494dc62b57ea25e AS builder
 USER root
 
 # Switch to UK Alpine mirrors, update package index and upgrade all installed packages
@@ -17,20 +17,18 @@ COPY . /app
 # Copy package.json and yarn.lock for better layer caching
 COPY --chown=999:998 package.json yarn.lock ./
 
-# Set npm/yarn configurations for Alpine builds and Parcel compatibility
+# Set npm/yarn configurations for Alpine builds and Vite compatibility
 RUN yarn config set network-timeout 300000 && \
     yarn config set cache-folder /tmp/yarn-cache && \
     yarn config set target_platform linux && \
     yarn config set target_arch x64 && \
     yarn config set target_libc musl
 
-# Install dependencies with proper platform handling for Parcel
+# Install dependencies with proper platform handling for Vite
 RUN set -e && \
     echo "Starting yarn install..." && \
     yarn install --frozen-lockfile --production=false --verbose --network-timeout 300000 && \
-    echo "Yarn install completed successfully" && \
-    ls -la node_modules/@parcel/rust/ || echo "Parcel rust module not found" && \
-    find node_modules -name "*parcel*rust*musl*" -o -name "*parcel*rust*linux*" || echo "No Parcel native binaries found"
+    echo "Yarn install completed successfully"
 
 # Copy the rest of the application files
 COPY --chown=999:998 . /app
@@ -45,7 +43,7 @@ RUN if yarn run --silent --json 2>/dev/null | grep -q '"postinstall"'; then \
 # Build app as root to avoid permission issues
 USER root
 
-RUN yarn run build-prod 
+RUN yarn build
 
 # Create production image
 
@@ -60,7 +58,6 @@ RUN rm /etc/nginx/conf.d/default.conf
 
 COPY --from=builder /app/dist /usr/share/nginx/html/
 COPY --from=builder /app/env.json /usr/share/nginx/html
-COPY --from=builder /app/google862eca84e8b12823.html /usr/share/nginx/html/
 COPY --from=builder /app/generate-env.sh .
 COPY --from=builder /app/nginx/app.conf /etc/nginx/conf.d/default.conf
 COPY --from=builder /app/nginx/nginx.conf /etc/nginx/nginx.conf
