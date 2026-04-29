@@ -17,7 +17,7 @@ spec:
   {{ if or (eq .KUBE_NAMESPACE .STG_ENV) (eq .KUBE_NAMESPACE .PROD_ENV) }}
   replicas: 2
   {{ else }}
-  replicas: 1
+  replicas: 2
   {{ end }}
   selector:
     matchLabels:
