@@ -30,7 +30,7 @@ export default function Eta() {
               onlineText: config.bannerTypeDisplay.online,
               botMetaDisplay: config.botMetaDisplay,
             }}
-            onChatEnded={() => navigate("/end-chat-confirmation")}
+            onChatEnded={() => navigate('/end-chat-confirmation')}
             loggingCallback={logData}
             loadingSpinner={<LoadingSpinner />}
             errorCallback= {() => setIsErrorState(true)}
