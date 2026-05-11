@@ -27,7 +27,7 @@ export default defineConfig([
       "**/*.config.js",
       ".scannerwork/**"
     ],
-    files: ["**/*.js"],
+    files: ["**/*.{js,jsx}"],
     plugins: {
       'react-hooks': reactHooksPlugin,
       'react': reactPlugin,

@@ -10,15 +10,14 @@
     "test": "TZ=UTC jest --coverage",
     "lint": "eslint src/",
     "lint:ci": "NODE_OPTIONS=--max-old-space-size=4096 eslint src/",
-    "lint:fix": "eslint src/ --fix",
-    "format": "prettier --write \"src/*.{js}\""
+    "lint:fix": "eslint src/ --fix"
   },
   "browserslist": "> 0.25%, not dead",
   "dependencies": {
     "@hods/loading-spinner": "0.5.1",
     "@hods/sass-base": "0.5.1",
     "govuk-frontend": "5.11.0",
-    "hof-genesys-chat-component": "0.5.0",
+    "hof-genesys-chat-component": "0.6.0",
     "js-cookie": "3.0.5",
     "react": "19.1.0",
     "react-dom": "19.1.0",

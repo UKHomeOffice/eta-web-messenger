@@ -19,7 +19,7 @@ loadEnvironmentConfig(async () => {
   const [{ default: RootLayout }, { App }] = await Promise.all([
     import('./components/layout/layout'),
     import('./App'),
-  ])
+  ]);
   
   const container = document.getElementById('app');
   const root = createRoot(container);
