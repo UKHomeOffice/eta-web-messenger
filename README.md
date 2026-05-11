@@ -40,7 +40,7 @@ This guide shows how to run `visa-web-messenger` locally for development, how to
 
 ### Prerequisites
 
-- Node (the currently pinned base image is [hof-nodejs 20](https://quay.io/repository/ukhomeofficedigital/hof-nodejs?tab=tags&tag=20.19.0-alpine3.21-v2@sha256:ab9686c7cf77bab94ab32c1c0e262b2a5242c2cbff61b0bbb3f62610b4f2e706)). Use the project's node manager or the official Node installation.
+- Node (the currently pinned base image is [nodejs 24 alpine](https://hub.docker.com/layers/library/node/24.15.0-alpine3.23/images/sha256-8e2c930fda481a6ec141fe5a88e8c249c69f8102fe98af505f38c081649ea749)). Use the project's node manager or the official Node installation.
 - Yarn
 - Docker (when testing container builds locally).
 
