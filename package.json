@@ -8,6 +8,10 @@
     "dev": "vite",
     "build": "vite build",
     "test": "TZ=UTC jest --coverage",
+    "test:e2e": "playwright test",
+    "test:e2e:smoke": "playwright test --grep-invert @history",
+    "test:e2e:history": "playwright test --grep @history",
+    "test:e2e:headed": "playwright test --headed",
     "lint": "eslint src/",
     "lint:ci": "NODE_OPTIONS=--max-old-space-size=4096 eslint src/",
     "lint:fix": "eslint src/ --fix"
@@ -24,6 +28,7 @@
     "react-router": "7.7.0"
   },
   "devDependencies": {
+    "@playwright/test": "^1.55.0",
     "@babel/eslint-parser": "7.28.4",
     "@babel/preset-env": "7.28.0",
     "@babel/preset-react": "7.27.1",
