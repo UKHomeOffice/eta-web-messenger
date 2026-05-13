@@ -198,6 +198,7 @@ steps:
     environment:
       BASE_URL: https://$${BRANCH_ENV}
     commands:      
+      - yarn playwright install
       - yarn install --frozen-lockfile
       - yarn test:e2e
     when:
