@@ -195,12 +195,10 @@ steps:
   - name: e2e_tests
     pull: if-not-exists
     image: mcr.microsoft.com/playwright:v1.60.0-noble
-    environment:
-      PLAYWRIGHT_BASE_URL: https://$${BRANCH_ENV}
     commands:
       - yarn playwright install --with-deps
       - yarn install --frozen-lockfile
-      - yarn test:e2e
+      - PLAYWRIGHT_BASE_URL="https://$${BRANCH_ENV}" yarn test:e2e
     when:
       branch:
         <<: *include_all_branches
