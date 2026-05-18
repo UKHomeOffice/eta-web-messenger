@@ -33,30 +33,23 @@ export default function AccessibilityStatement() {
           (including the most recent versions of JAWS, NVDA and VoiceOver)
         </li>
         <li>
-          focus management from launcher to widget
+          move focus from the launcher to the messenger window
         </li>
         <li>
-          no keyboard trap
+          close or minimise the messenger and return focus correctly
         </li>
         <li>
-          focus returns correctly when closing or minimising the widget
+          navigate the message stream and input controls in a logical order
         </li>
         <li>
-          logical tab order and visible focus across the message stream and input controls
+          see a visible focus indicator when using a keyboard
         </li>
         <li>
-          screen reader announcements for new messages, status updates,
+          receive screen reader announcements for new messages, status updates,
           send confirmations and error confirmations
         </li>
         <li>
-          clear and controllable timeout/inactivity behaviour
-        </li>
-        <li>
-          error handling for validation and any applicable attachments/uploads
-        </li>
-        <li>
-          reflow at 400% zoom, ensuring the widget remains usable and does not obscure
-          or trap access to underlying page content
+          use the messenger at 400% zoom without the widget becoming unusable or blocking access to the page
         </li>
       </ul>
 
