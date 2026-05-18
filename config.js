@@ -24,8 +24,8 @@ export default {
   },
   accessibility: {
     statementDate: '(10 November 2025)',
-    statementReviewedDate: '(10 November 2025)',
-    websiteUpdates: '(30 October 2025)'
+    statementReviewedDate: '(18 May 2026)',
+    websiteUpdates: '(14 May 2026)'
   }, 
   logApiEndpoint: getEnvValueByKey('LOG_ENDPOINT')
 };
