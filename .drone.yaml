@@ -205,7 +205,7 @@ steps:
       - yarn playwright install --with-deps
       - yarn install --frozen-lockfile
       - test -s /root/.dockersock/branch_url.txt || (echo "Missing deployed branch URL at /root/.dockersock/branch_url.txt" && exit 1)
-      - PLAYWRIGHT_BASE_URL="https://$(cat /root/.dockersock/branch_url.txt)" yarn test:e2e
+      - CI=true PLAYWRIGHT_BASE_URL="https://$(cat /root/.dockersock/branch_url.txt)" yarn test:e2e
     when:
       branch:
         <<: *include_all_branches

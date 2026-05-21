@@ -18,3 +18,4 @@ apps/**/translations/**/*
 test/_accessibility/tmp/*
 /public/env.json
 test-results/
+.features-gen/
