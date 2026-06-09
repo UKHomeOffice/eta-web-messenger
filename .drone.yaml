@@ -57,21 +57,72 @@ sonar_scanner: &sonar_scanner
   commands:
     - sonar-scanner -Dproject.settings=./sonar-project.properties
 
+github_app_token_step: &github_app_token_step
+  pull: if-not-exists
+  image: alpine:3.21
+  volumes:
+    - name: dockersock
+      path: /root/.dockersock
+  commands:
+    - apk add --no-cache bash curl jq openssl
+    - test -n "$GITHUB_APP_ID" || (echo "Missing GITHUB_APP_ID secret." && exit 1)
+    - test -n "$GITHUB_APP_PRIVATE_KEY" || (echo "Missing GITHUB_APP_PRIVATE_KEY secret." && exit 1)
+    - test -n "$GITHUB_APP_INSTALLATION_ID" || (echo "Missing GITHUB_APP_INSTALLATION_ID secret." && exit 1)
+    - test -n "$OUTPUT_TOKEN_FILE" || (echo "Missing OUTPUT_TOKEN_FILE." && exit 1)
+    - bash bin/generate_github_app_token.sh
+
+github_app_token_secrets_ukho: &github_app_token_secrets_ukho
+  GITHUB_APP_ID:
+    from_secret: hof_ukho_gh_app_id
+  GITHUB_APP_PRIVATE_KEY:
+    from_secret: hof_ukho_gh_app_pk
+  GITHUB_APP_INSTALLATION_ID:
+    from_secret: hof_ukho_gh_app_install_id
+
+github_app_token_secrets_hof: &github_app_token_secrets_hof
+  GITHUB_APP_ID:
+    from_secret: HOF_GH_APP_ID
+  GITHUB_APP_PRIVATE_KEY:
+    from_secret: HOF_GH_APP_PK
+  GITHUB_APP_INSTALLATION_ID:
+    from_secret: HOF_GH_APP_INSTALL_ID
+
+clone_repos_step: &clone_repos_step
+  image: alpine/git
+  volumes:
+    - name: dockersock
+      path: /root/.dockersock
+  commands:
+    - test -s "$CLONE_TOKEN_FILE" || (echo "$CLONE_TOKEN_MISSING_MESSAGE" && exit 1)
+    - export GITHUB_TOKEN="$(cat "$CLONE_TOKEN_FILE")"
+    - git clone https://x-access-token:$${GITHUB_TOKEN}@github.com/UKHomeOfficeForms/hof-services-config.git
+    - if [ "${CLONE_REPOS_PRUNE:-false}" = "true" ]; then find hof-services-config/* | grep -v $HOF_CONFIG | grep -v 'infrastructure' | xargs rm -rf; fi
+    - rm -f "$CLONE_TOKEN_FILE"
+
 steps:
-  - name: clone_repos
-    image: alpine/git
+  - name: generate_github_app_token_for_clone
+    <<: *github_app_token_step
     environment:
-      DRONE_GIT_USERNAME:
-        from_secret: drone_git_username
-      DRONE_GIT_TOKEN:
-        from_secret: drone_git_token
-    commands:
-      - git clone https://$${DRONE_GIT_USERNAME}:$${DRONE_GIT_TOKEN}@github.com/UKHomeOfficeForms/hof-services-config.git
-      - find hof-services-config/* | grep -v $HOF_CONFIG | grep -v 'infrastructure' | xargs rm -rf
+      <<: *github_app_token_secrets_hof
+      OUTPUT_TOKEN_FILE: /root/.dockersock/github_app_token_for_clone.txt
     when:
       branch:
         <<: *include_all_branches
       event: [push, pull_request]
+
+  - name: clone_repos
+    <<: *clone_repos_step
+    environment:
+      CLONE_TOKEN_FILE: /root/.dockersock/github_app_token_for_clone.txt
+      CLONE_TOKEN_MISSING_MESSAGE: Missing GitHub App token file for clone step.
+      CLONE_REPOS_PRUNE: "true"
+    when:
+      branch:
+        <<: *include_all_branches
+      event: [push, pull_request]
+    depends_on:
+      - generate_github_app_token_for_clone
+      
   - name: scan_base_image_os
     pull: always
     image: 340268328991.dkr.ecr.eu-west-2.amazonaws.com/acp/trivy/client:latest
@@ -213,6 +264,42 @@ steps:
     depends_on:
       - deploy_to_branch
 
+  # Generate short-lived GitHub App installation token for report publishing
+  - name: generate_github_app_token
+    <<: *github_app_token_step
+    environment:
+      <<: *github_app_token_secrets_ukho
+      OUTPUT_TOKEN_FILE: /root/.dockersock/github_app_token.txt
+    when:
+      branch:
+        <<: *include_all_branches
+      event: pull_request
+    depends_on:
+      - e2e_tests
+
+  # Upload Playwright HTML report for PR and comment a download link
+  - name: publish_e2e_report_to_pr
+    pull: if-not-exists
+    image: alpine:3.21
+    volumes:
+      - name: dockersock
+        path: /root/.dockersock
+    commands:
+      - apk add --no-cache bash curl jq zip
+      - test -n "$DRONE_PULL_REQUEST" || (echo "Missing DRONE_PULL_REQUEST. This step only supports pull_request builds." && exit 1)
+      - export DRONE_REPO="$${DRONE_REPO:-$GIT_REPO}"
+      - test -n "$DRONE_REPO" || (echo "Missing repository slug (DRONE_REPO/GIT_REPO)." && exit 1)
+      - test -s /root/.dockersock/github_app_token.txt || (echo "Missing GitHub App token file from generate_github_app_token step." && exit 1)
+      - export GITHUB_APP_TOKEN="$(cat /root/.dockersock/github_app_token.txt)"
+      - bash bin/publish_e2e_test_report.sh
+      - rm -f /root/.dockersock/github_app_token.txt
+    when:
+      branch:
+        <<: *include_all_branches
+      event: pull_request
+    depends_on:
+      - generate_github_app_token
+
   # Deploy to Master UAT environment
   - name: deploy_to_uat
     pull: if-not-exists
@@ -272,18 +359,25 @@ steps:
       - get_pr_branch
       - deploy_to_uat
 
-  - name: clone_repos_stg
-    image: alpine/git
+  - name: generate_github_app_token_for_clone_stg
+    <<: *github_app_token_step
     environment:
-      DRONE_GIT_USERNAME:
-        from_secret: drone_git_username
-      DRONE_GIT_TOKEN:
-        from_secret: drone_git_token
-    commands:
-      - git clone https://$${DRONE_GIT_USERNAME}:$${DRONE_GIT_TOKEN}@github.com/UKHomeOfficeForms/hof-services-config.git
+      <<: *github_app_token_secrets_hof
+      OUTPUT_TOKEN_FILE: /root/.dockersock/github_app_token_for_clone_stg.txt
     when:
       target: STG
       event: promote
+
+  - name: clone_repos_stg
+    <<: *clone_repos_step
+    environment:
+      CLONE_TOKEN_FILE: /root/.dockersock/github_app_token_for_clone_stg.txt
+      CLONE_TOKEN_MISSING_MESSAGE: Missing GitHub App token file for STG clone step.
+    when:
+      target: STG
+      event: promote
+    depends_on:
+      - generate_github_app_token_for_clone_stg
 
   - name: deploy_to_stg
     pull: if-not-exists
@@ -316,20 +410,27 @@ steps:
       target: PROD
       event: promote
 
-  - name: clone_repos_prod
-    image: alpine/git
+  - name: generate_github_app_token_for_clone_prod
+    <<: *github_app_token_step
     environment:
-      DRONE_GIT_USERNAME:
-        from_secret: drone_git_username
-      DRONE_GIT_TOKEN:
-        from_secret: drone_git_token
-    commands:
-      - git clone https://$${DRONE_GIT_USERNAME}:$${DRONE_GIT_TOKEN}@github.com/UKHomeOfficeForms/hof-services-config.git
+      <<: *github_app_token_secrets_hof
+      OUTPUT_TOKEN_FILE: /root/.dockersock/github_app_token_for_clone_prod.txt
     when:
       target: PROD
       event: promote
     depends_on:
       - sanity_check_build_prod
+
+  - name: clone_repos_prod
+    <<: *clone_repos_step
+    environment:
+      CLONE_TOKEN_FILE: /root/.dockersock/github_app_token_for_clone_prod.txt
+      CLONE_TOKEN_MISSING_MESSAGE: Missing GitHub App token file for PROD clone step.
+    when:
+      target: PROD
+      event: promote
+    depends_on:
+      - generate_github_app_token_for_clone_prod
 
   # Deploy to Production environment
   - name: deploy_to_prod
@@ -348,19 +449,26 @@ steps:
     depends_on:
       - clone_repos_prod
 
-    # CRON job steps that runs security scans using Trivy
-  - name: cron_clone_repos
-    image: alpine/git
+  - name: generate_github_app_token_for_clone_cron
+    <<: *github_app_token_step
     environment:
-      DRONE_GIT_USERNAME:
-        from_secret: DRONE_GIT_USERNAME
-      DRONE_GIT_TOKEN:
-        from_secret: DRONE_GIT_TOKEN
-    commands:
-      - git clone https://$${DRONE_GIT_USERNAME}:$${DRONE_GIT_TOKEN}@github.com/UKHomeOfficeForms/hof-services-config.git
+      <<: *github_app_token_secrets_hof
+      OUTPUT_TOKEN_FILE: /root/.dockersock/github_app_token_for_clone_cron.txt
     when:
       cron: security_scans
       event: cron
+
+  # CRON job steps that runs security scans using Trivy
+  - name: cron_clone_repos
+    <<: *clone_repos_step
+    environment:
+      CLONE_TOKEN_FILE: /root/.dockersock/github_app_token_for_clone_cron.txt
+      CLONE_TOKEN_MISSING_MESSAGE: Missing GitHub App token file for CRON clone step.
+    when:
+      cron: security_scans
+      event: cron
+    depends_on:
+      - generate_github_app_token_for_clone_cron
 
   - name: cron_build_image
     image: 340268328991.dkr.ecr.eu-west-2.amazonaws.com/acp/dind
