@@ -21,4 +21,6 @@
   "transform": {
     "^.+\\.[jt]sx?$": ["babel-jest", { "configFile": "./babel.jest.config.json" }]
   }
+  ,
+  "testPathIgnorePatterns": ["<rootDir>/e2e/"]
 }

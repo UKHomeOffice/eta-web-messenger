@@ -147,6 +147,30 @@ docker run --rm --env-file .env -p 8000:80 eta-web-messenger:local
 yarn test
 ```
 
+- Run migrated Playwright end-to-end tests:
+
+```bash
+yarn test:e2e
+```
+
+- Run Playwright smoke tests only (excludes history-fetch tests):
+
+```bash
+yarn test:e2e:smoke
+```
+
+- Run Playwright history-fetch tests only:
+
+```bash
+yarn test:e2e:history
+```
+
+Notes:
+
+- The migrated hwmeta scenarios are in `e2e/eta.spec.js`.
+- Scenarios that require a live Genesys deployment are gated behind `PLAYWRIGHT_RUN_GENESYS_E2E=true`.
+- You can point Playwright at an existing environment with `PLAYWRIGHT_BASE_URL`, otherwise it starts `yarn dev` on port 3000.
+
 - Run ESLint:
 
 ```bash

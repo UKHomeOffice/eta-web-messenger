@@ -17,3 +17,5 @@ apps/**/translations/**/*
 !apps/**/translations/src/**/*
 test/_accessibility/tmp/*
 /public/env.json
+test-results/
+.features-gen/

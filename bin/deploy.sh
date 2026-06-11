@@ -35,5 +35,9 @@ fi
 sleep $READY_FOR_TEST_DELAY
 
 if [[ ${KUBE_NAMESPACE} == ${BRANCH_ENV} ]]; then
-  echo "Branch - eta-web-messenger-$DRONE_SOURCE_BRANCH.internal.branch.sas-notprod.homeoffice.gov.uk"
+  BRANCH_HOST="eta-web-messenger-$DRONE_SOURCE_BRANCH.internal.branch.sas-notprod.homeoffice.gov.uk"
+  echo "Branch - $BRANCH_HOST"
+  if [[ -d /root/.dockersock ]]; then
+    echo "$BRANCH_HOST" > /root/.dockersock/branch_url.txt
+  fi
 fi
