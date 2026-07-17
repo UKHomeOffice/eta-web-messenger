@@ -65,7 +65,7 @@ spec:
                   name: google-analytics
                   key: gtmId
             # only enable analytics in production. UAT is added for testing and must be rollback after testing.
-            {{ if or (eq .KUBE_NAMESPACE .UAT_ENV) (eq .KUBE_NAMESPACE .PROD_ENV) }}
+            {{ if eq .KUBE_NAMESPACE .PROD_ENV }}
             - name: ENABLE_ANALYTICS
               value: "true"
             {{ else }}
