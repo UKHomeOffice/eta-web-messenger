@@ -54,8 +54,9 @@ unit_tests: &unit_tests
 sonar_scanner: &sonar_scanner
   pull: always
   image: quay.io/ukhomeofficedigital/sonar-scanner:latest
+  timeout: 10m
   commands:
-    - sonar-scanner -Dproject.settings=./sonar-project.properties
+    - sonar-scanner -Dproject.settings=./sonar-project.properties -Dsonar.qualitygate.wait=true -Dsonar.qualitygate.timeout=300
 
 github_app_token_step: &github_app_token_step
   pull: if-not-exists
@@ -161,12 +162,16 @@ steps:
       event: [push, pull_request]
     depends_on:
       - lint
+      
   - name: sonar_scanner
     <<: *sonar_scanner
     when:
       branch:
         <<: *include_all_branches
       event: [push, pull_request]
+    depends_on:
+      - unit_tests
+
   - name: build
     pull: if-not-exists
     image: 340268328991.dkr.ecr.eu-west-2.amazonaws.com/acp/dind:latest
@@ -182,7 +187,7 @@ steps:
         <<: *include_all_branches
       event: [push, pull_request]
     depends_on:
-      - unit_tests
+      - sonar_scanner
   - name: push_ecr
     pull: if-not-exists
     image: plugins/ecr
