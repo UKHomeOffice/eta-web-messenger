@@ -51,6 +51,9 @@ USER root
 
 WORKDIR /app
 
+# Patch CVE-2026-93990 (libexpat) present in the pinned base image
+RUN apk upgrade --no-cache libexpat
+
 # Remove default NGINX config
 RUN rm /etc/nginx/conf.d/default.conf
 
