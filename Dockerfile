@@ -1,6 +1,9 @@
 FROM alpine:3.24.2@sha256:294b683cb724975bec92580e1e685676bd4b50bda910ddb8c51d4cabeaec77e6 AS builder
 USER root
 
+# Base alpine image ships no runtime, so install node & yarn from the apk repos
+RUN apk add --no-cache nodejs yarn
+
 # Setup nodejs group & nodejs user
 RUN addgroup --system nodejs --gid 998 && \
     adduser --system nodejs --uid 999 --home /app/ && \
