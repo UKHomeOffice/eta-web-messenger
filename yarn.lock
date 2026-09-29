@@ -5835,7 +5835,7 @@ reflect.getprototypeof@^1.0.10:
     get-proto "^1.0.1"
     which-builtin-type "^1.2.1"
 
-regenerate-unicode-properties@^10.2.2:
+regenerate-unicode-properties@^10.3.0:
   version "10.3.0"
   resolved "https://registry.yarnpkg.com/regenerate-unicode-properties/-/regenerate-unicode-properties-10.3.0.tgz#73981205a914f7ce12e9518f6c073119e46f3b7c"
   integrity sha512-9ns8odR8e9q3otKeHj3DE80jZYKg6zVeZKE+zQmRKXFoVUcuiTGeO6iusDhPRoIQQPVPRvH+SfBhrTud4eczuw==
@@ -5872,12 +5872,12 @@ regexp.prototype.flags@^1.5.4:
     set-function-name "^2.0.2"
 
 regexpu-core@^6.3.1:
-  version "6.4.0"
-  resolved "https://registry.yarnpkg.com/regexpu-core/-/regexpu-core-6.4.0.tgz#3580ce0c4faedef599eccb146612436b62a176e5"
-  integrity sha512-0ghuzq67LI9bLXpOX/ISfve/Mq33a4aFRzoQYhnnok1JOFpmE/A2TBGkNVenOGEeSBCjIiWcc6MVOG5HEQv0sA==
+  version "6.5.2"
+  resolved "https://registry.yarnpkg.com/regexpu-core/-/regexpu-core-6.5.2.tgz#269ba4235d9cc3fb49297ecda74f5f9a24d596cc"
+  integrity sha512-zkmVH92DlzjSFc4xKGZp/2BXIFrDIdBQBC8gUXKCsMgKYb1bkCkxfSuoW1werDjaTEMTbULkHtKFHe1L+Abnaw==
   dependencies:
     regenerate "^1.4.2"
-    regenerate-unicode-properties "^10.2.2"
+    regenerate-unicode-properties "^10.3.0"
     regjsgen "^0.8.0"
     regjsparser "^0.13.0"
     unicode-match-property-ecmascript "^2.0.0"
