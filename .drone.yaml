@@ -37,17 +37,17 @@ trigger:
 
 node_image: &node_image
   pull: if-not-exists
-  image: node:24.18.0-alpine3.24@sha256:4ba75f835bb8802193e4c114572113d4b26f95f6f094f4b5229d2a77773e0afc
+  image: quay.io/ukhomeofficedigital/hof-nodejs:24.21.0-alpine3.24@sha256:80b294ce5027fdc87c58cc990f4d9804323a1734c1e8a1ae9d6bbe569fa8b01e
 
 lint: &lint
   pull: if-not-exists
-  image: node:24.18.0-alpine3.24@sha256:4ba75f835bb8802193e4c114572113d4b26f95f6f094f4b5229d2a77773e0afc
+  image: quay.io/ukhomeofficedigital/hof-nodejs:24.21.0-alpine3.24@sha256:80b294ce5027fdc87c58cc990f4d9804323a1734c1e8a1ae9d6bbe569fa8b01e
   commands:
     - yarn lint:ci
 
 unit_tests: &unit_tests
   pull: if-not-exists
-  image: node:24.18.0-alpine3.24@sha256:4ba75f835bb8802193e4c114572113d4b26f95f6f094f4b5229d2a77773e0afc
+  image: quay.io/ukhomeofficedigital/hof-nodejs:24.21.0-alpine3.24@sha256:80b294ce5027fdc87c58cc990f4d9804323a1734c1e8a1ae9d6bbe569fa8b01e
   commands:
     - yarn run test:unit
 
@@ -60,7 +60,7 @@ sonar_scanner: &sonar_scanner
 
 github_app_token_step: &github_app_token_step
   pull: if-not-exists
-  image: alpine:3.21
+  image: quay.io/ukhomeofficedigital/hof-nodejs:24.21.0-alpine3.24@sha256:80b294ce5027fdc87c58cc990f4d9804323a1734c1e8a1ae9d6bbe569fa8b01e
   volumes:
     - name: dockersock
       path: /root/.dockersock
@@ -132,10 +132,10 @@ steps:
         cpu: 1000
         memory: 1024Mi
     environment:
-      IMAGE_NAME: node:24.18.0-alpine3.24@sha256:4ba75f835bb8802193e4c114572113d4b26f95f6f094f4b5229d2a77773e0afc
+      IMAGE_NAME: quay.io/ukhomeofficedigital/hof-nodejs:24.21.0-alpine3.24@sha256:80b294ce5027fdc87c58cc990f4d9804323a1734c1e8a1ae9d6bbe569fa8b01e
       SERVICE_URL: https://acp-trivy-helm.acp-trivy.svc.cluster.local:443
       SEVERITY: MEDIUM,HIGH,CRITICAL  --dependency-tree
-      FAIL_ON_DETECTION: false
+      FAIL_ON_DETECTION: true
       IGNORE_UNFIXED: false
     volumes:
       - name: dockersock
@@ -220,7 +220,7 @@ steps:
     environment:
       IMAGE_NAME: so/eta-web-messenger:${DRONE_COMMIT_SHA}
       SEVERITY: MEDIUM,HIGH,CRITICAL
-      FAIL_ON_DETECTION: false
+      FAIL_ON_DETECTION: true
       IGNORE_UNFIXED: false
     when:
       event:
@@ -253,11 +253,15 @@ steps:
   # Run playwright tests against the pull request branch environment
   - name: e2e_tests
     pull: if-not-exists
-    image: mcr.microsoft.com/playwright:v1.60.0-noble
+    image: mcr.microsoft.com/playwright:v1.63.0-noble
     volumes:
       - name: dockersock
         path: /root/.dockersock
     commands:
+      - npm install -g n
+      - n 24.21.0
+      - hash -r
+      - node --version
       - yarn playwright install --with-deps
       - yarn install --frozen-lockfile
       - test -s /root/.dockersock/branch_url.txt || (echo "Missing deployed branch URL at /root/.dockersock/branch_url.txt" && exit 1)
@@ -285,7 +289,7 @@ steps:
   # Upload Playwright HTML report for PR and comment a download link
   - name: publish_e2e_report_to_pr
     pull: if-not-exists
-    image: alpine:3.21
+    image: quay.io/ukhomeofficedigital/hof-nodejs:24.21.0-alpine3.24@sha256:80b294ce5027fdc87c58cc990f4d9804323a1734c1e8a1ae9d6bbe569fa8b01e
     volumes:
       - name: dockersock
         path: /root/.dockersock
@@ -492,7 +496,7 @@ steps:
     image: 340268328991.dkr.ecr.eu-west-2.amazonaws.com/acp/trivy/client:latest
     pull: always
     environment:
-      IMAGE_NAME: node:24.18.0-alpine3.24@sha256:4ba75f835bb8802193e4c114572113d4b26f95f6f094f4b5229d2a77773e0afc
+      IMAGE_NAME: quay.io/ukhomeofficedigital/hof-nodejs:24.21.0-alpine3.24@sha256:80b294ce5027fdc87c58cc990f4d9804323a1734c1e8a1ae9d6bbe569fa8b01e
       SEVERITY: UNKNOWN,LOW,MEDIUM,HIGH,CRITICAL --dependency-tree
       FAIL_ON_DETECTION: true
       IGNORE_UNFIXED: false
@@ -510,7 +514,7 @@ steps:
         IMAGE_NAME: so/eta-web-messenger:${DRONE_COMMIT_SHA}
         SERVICE_URL: https://acp-trivy-helm.acp-trivy.svc.cluster.local:443
         SEVERITY: UNKNOWN,LOW,MEDIUM,HIGH,CRITICAL --dependency-tree
-        FAIL_ON_DETECTION: false
+        FAIL_ON_DETECTION: true
         IGNORE_UNFIXED: false
     when:
       cron: security_scans

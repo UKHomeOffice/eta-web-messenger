@@ -32,8 +32,8 @@
     "react-router": "7.7.0"
   },
   "devDependencies": {
-    "@playwright/test": "^1.55.0",
-    "playwright-bdd": "^8.5.1",
+    "@playwright/test": "^1.63.0",
+    "playwright-bdd": "^9.2.1",
     "@babel/eslint-parser": "7.28.4",
     "@babel/preset-env": "7.28.0",
     "@babel/preset-react": "7.27.1",
